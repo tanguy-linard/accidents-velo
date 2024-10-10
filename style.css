@@ -21,5 +21,5 @@ h2 {
     background-color: #eee;
     border: 1px solid #666;
     height: calc(100vh - 100px);
-    width: calc(100vw - 365px);
+    width: calc(100vw - 40px);
 }

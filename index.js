@@ -26,8 +26,22 @@ function draw_map() {
 	});
 	background_map.addTo(mymap);
 
-	// dessine les points
-	for (var i = 0; i < 1000; i++) {
-		L.marker([bike_accidents[i].AccidentLocation_WGS84_N, bike_accidents[i].AccidentLocation_WGS84_E]).addTo(mymap);
+	// // dessine les points
+	// for (var i = 0; i < 1000; i++) {
+	// 	L.marker([bike_accidents[i].AccidentLocation_WGS84_N, bike_accidents[i].AccidentLocation_WGS84_E]).addTo(mymap);
+	// }
+
+	// initialise le cluster des points	
+	markers = L.markerClusterGroup();
+
+	// ajoute les points au cluster
+	for (var i = 0; i < bike_accidents.length; i++) {
+		var lat = bike_accidents[i].AccidentLocation_WGS84_N;
+		var lng = bike_accidents[i].AccidentLocation_WGS84_E;
+		var marker = L.marker([lat, lng]);
+		markers.addLayer(marker);
 	}
+
+	// ajoute le cluster à la carte
+	mymap.addLayer(markers);
 }
