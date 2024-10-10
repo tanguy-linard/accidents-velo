@@ -1,12 +1,12 @@
+let bike_accidents = [];
 
-// importation du fichier csv avec les accidents de vélo
-bike_accidents = [];
 document.addEventListener("DOMContentLoaded", async function (event) {
+	// importation du fichier csv avec les accidents de vélo
 	bike_accidents = await d3.csv('data/bike_accidents.csv');
-});
 
-// dessine la carte
-draw_map();
+	// dessine la carte
+	draw_map();
+});
 
 /* 
   dessine la carte
@@ -26,8 +26,8 @@ function draw_map() {
 	});
 	background_map.addTo(mymap);
 
-	// cherche coordonnées des accidents de vélo
-	
-
 	// dessine les points
+	for (var i = 0; i < 1000; i++) {
+		L.marker([bike_accidents[i].AccidentLocation_WGS84_N, bike_accidents[i].AccidentLocation_WGS84_E]).addTo(mymap);
+	}
 }
