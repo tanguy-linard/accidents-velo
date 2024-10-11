@@ -38,7 +38,12 @@ function draw_map() {
 	for (var i = 0; i < bike_accidents.length; i++) {
 		var lat = bike_accidents[i].AccidentLocation_WGS84_N;
 		var lng = bike_accidents[i].AccidentLocation_WGS84_E;
-		var marker = L.marker([lat, lng]);
+		var marker = L.circleMarker([lat, lng], {
+			radius: 5, // Taille du cercle
+			color: 'red', // Couleur du bord
+			fillColor: 'red', // Couleur de remplissage
+			fillOpacity: 1 // Opacité du remplissage
+		});
 		markers.addLayer(marker);
 	}
 

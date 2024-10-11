@@ -23,3 +23,11 @@ h2 {
     height: calc(100vh - 100px);
     width: calc(100vw - 40px);
 }
+
+.cluset-icon {
+    background-color: #f39c12;
+    color: white;
+    border-radius: 50%;
+    font-size: 14px;
+    line-height: 40px;
+}
