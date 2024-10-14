@@ -24,10 +24,16 @@ h2 {
     width: calc(100vw - 40px);
 }
 
-.cluset-icon {
-    background-color: #f39c12;
+.cluster-icon {
+    background-color: red;
     color: white;
     border-radius: 50%;
     font-size: 14px;
     line-height: 40px;
+}
+
+.cluster-count {
+    color: black;
+    line-height: 40px; /* Centrer verticalement le texte */
+    align-items: center;
 }

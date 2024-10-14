@@ -32,7 +32,19 @@ function draw_map() {
 	// }
 
 	// initialise le cluster des points	
-	markers = L.markerClusterGroup();
+	markers = L.markerClusterGroup({
+		// iconCreateFunction: function (cluster) {
+		// 	var count = cluster.getChildCount();
+		// 	var k = 0.001; // taille du cluster
+		// 	var zoom = mymap.getZoom();
+
+		// 	return L.divIcon({
+		// 		html: `<div class="cluster-count">${count}</div>`,
+		// 		className: 'cluster-icon',
+		// 		iconSize: L.point(40, 40)
+		// 	});
+		// }
+	});
 
 	// ajoute les points au cluster
 	for (var i = 0; i < bike_accidents.length; i++) {
