@@ -11,12 +11,25 @@
     <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
     <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
     <script src="https://d3js.org/d3.v7.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.0/dist/nouislider.min.js"></script>
 </head>
 
 <body>
-    <!-- titre et sous titre -->
-    <h1>Accidents à vélo en Suisse</h1>
-    <h2>Avec dommage corporel depuis 2011</h2>
+    <!-- Conteneur pour le titre et le slider -->
+    <div class="header-container">
+        <!-- Titre principal -->
+        <div class="title">
+            <h1>Accidents à vélo en Suisse</h1>
+            <h2>Avec dommage corporel depuis 2011</h2>
+        </div>
+
+        <!-- Slider -->
+        <<div id="slider-container">
+            <div id="date-range-slider"></div>
+            <span id="selected-dates"></span>
+        </div>
+    </div>
 
     <div id="map"></div>
 

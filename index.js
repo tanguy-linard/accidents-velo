@@ -1,11 +1,25 @@
-let bike_accidents = [];
+let accidents = [];
 
 document.addEventListener("DOMContentLoaded", async function (event) {
 	// importation du fichier csv avec les accidents de vélo
-	bike_accidents = await d3.csv('data/bike_accidents.csv');
+	accidents = await d3.csv('data/bike_accidents.csv');
 
 	// dessine la carte
 	draw_map();
+});
+
+// Crée le slider
+const dateSlider = document.getElementById('date-range-slider');
+
+noUiSlider.create(dateSlider, {
+    start: [2011, 2024], // Plage initiale
+    connect: true, // Colore la plage sélectionnée
+    range: {
+        min: 2011,
+        max: 2024
+    },
+    tooltips: true, // Affiche les valeurs lors du glissement
+    step: 1 // Étape d'un jour en millisecondes
 });
 
 /* 
@@ -26,10 +40,7 @@ function draw_map() {
 	});
 	background_map.addTo(mymap);
 
-	// // dessine les points
-	// for (var i = 0; i < 1000; i++) {
-	// 	L.marker([bike_accidents[i].AccidentLocation_WGS84_N, bike_accidents[i].AccidentLocation_WGS84_E]).addTo(mymap);
-	// }
+	// dessine les points
 
 	// initialise le cluster des points	
 	markers = L.markerClusterGroup({
@@ -47,15 +58,18 @@ function draw_map() {
 	});
 
 	// ajoute les points au cluster
-	for (var i = 0; i < bike_accidents.length; i++) {
-		var lat = bike_accidents[i].AccidentLocation_WGS84_N;
-		var lng = bike_accidents[i].AccidentLocation_WGS84_E;
+	for (var i = 0; i < accidents.length; i++) {
+		var lat = accidents[i].AccidentLocation_WGS84_N;
+		var lng = accidents[i].AccidentLocation_WGS84_E;
 		var marker = L.circleMarker([lat, lng], {
 			radius: 5, // Taille du cercle
-			color: 'red', // Couleur du bord
-			fillColor: 'red', // Couleur de remplissage
+			color: 'blue', // Couleur du bord
+			fillColor: 'blue', // Couleur de remplissage
 			fillOpacity: 1 // Opacité du remplissage
 		});
+
+		marker.bindTooltip(accidents[i].AccidentSeverityCategory_fr);
+
 		markers.addLayer(marker);
 	}
 

@@ -16,12 +16,26 @@ h2 {
 
 #map {
     position: absolute;
-    top: 80px;
+    top: 100px;
     left: 20px;
     background-color: #eee;
     border: 1px solid #666;
     height: calc(100vh - 100px);
     width: calc(100vw - 40px);
+}
+
+#date-range-slider {
+    width: 300px; /* Ajustez la largeur selon vos besoins */
+    margin: 10px auto; /* Centre le slider */
+    display: block; /* S'assure que le slider occupe toute sa largeur */
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between; /* Place le slider à droite */
+    align-items: center; /* Aligne verticalement */
+    padding: 10px 20px;
+    border-bottom: 1px solid #c0c0c0;
 }
 
 .cluster-icon {
