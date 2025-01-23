@@ -1,5 +1,20 @@
 let accidents = [];
 
+// initialise le cluster des points	
+const markers = L.markerClusterGroup({
+	// iconCreateFunction: function (cluster) {
+	// 	var count = cluster.getChildCount();
+	// 	var k = 0.001; // taille du cluster
+	// 	var zoom = mymap.getZoom();
+
+	// 	return L.divIcon({
+	// 		html: `<div class="cluster-count">${count}</div>`,
+	// 		className: 'cluster-icon',
+	// 		iconSize: L.point(40, 40)
+	// 	});
+	// }
+});
+
 document.addEventListener("DOMContentLoaded", async function (event) {
 	// importation du fichier csv avec les accidents de vélo
 	accidents = await d3.csv('data/bike_accidents.csv');
@@ -12,14 +27,25 @@ document.addEventListener("DOMContentLoaded", async function (event) {
 const dateSlider = document.getElementById('date-range-slider');
 
 noUiSlider.create(dateSlider, {
-    start: [2011, 2024], // Plage initiale
-    connect: true, // Colore la plage sélectionnée
+    start: [2011, 2024],
+    connect: true,
     range: {
         min: 2011,
         max: 2024
     },
-    tooltips: true, // Affiche les valeurs lors du glissement
-    step: 1 // Étape d'un jour en millisecondes
+    tooltips: {
+        to: function (value) {
+            return Math.round(value); // Supprime les décimales
+        },
+        from: function (value) {
+            return value;
+        }
+    },
+    step: 1
+});
+
+dateSlider.noUiSlider.on('change', function (values, handle) {
+    update_clusters(values)
 });
 
 /* 
@@ -40,39 +66,37 @@ function draw_map() {
 	});
 	background_map.addTo(mymap);
 
-	// dessine les points
-
-	// initialise le cluster des points	
-	markers = L.markerClusterGroup({
-		// iconCreateFunction: function (cluster) {
-		// 	var count = cluster.getChildCount();
-		// 	var k = 0.001; // taille du cluster
-		// 	var zoom = mymap.getZoom();
-
-		// 	return L.divIcon({
-		// 		html: `<div class="cluster-count">${count}</div>`,
-		// 		className: 'cluster-icon',
-		// 		iconSize: L.point(40, 40)
-		// 	});
-		// }
-	});
-
-	// ajoute les points au cluster
-	for (var i = 0; i < accidents.length; i++) {
-		var lat = accidents[i].AccidentLocation_WGS84_N;
-		var lng = accidents[i].AccidentLocation_WGS84_E;
-		var marker = L.circleMarker([lat, lng], {
-			radius: 5, // Taille du cercle
-			color: 'blue', // Couleur du bord
-			fillColor: 'blue', // Couleur de remplissage
-			fillOpacity: 1 // Opacité du remplissage
-		});
-
-		marker.bindTooltip(accidents[i].AccidentSeverityCategory_fr);
-
-		markers.addLayer(marker);
-	}
+	update_clusters([2011, 2024]);
 
 	// ajoute le cluster à la carte
 	mymap.addLayer(markers);
+}
+
+function update_clusters(dates){
+	markers.clearLayers();
+
+	filtered_accidents = filter_accidents(dates)
+
+	// ajoute les points au cluster
+	for (var i = 0; i < filtered_accidents.length; i++) {
+		var lat = filtered_accidents[i].AccidentLocation_WGS84_N;
+		var lng = filtered_accidents[i].AccidentLocation_WGS84_E;
+		var marker = L.circleMarker([lat, lng], {
+			radius: 5, // Taille du cercle
+			color: '#00a6ff', // Couleur du bord
+			fillColor: '#00a6ff', // Couleur de remplissage
+			fillOpacity: 0.8 // Opacité du remplissage
+		});
+
+		marker.bindTooltip(filtered_accidents[i].AccidentSeverityCategory_fr);
+
+		markers.addLayer(marker);
+	}
+}
+
+function filter_accidents(dates){
+	filtered_accidents = accidents.filter(function (d) {
+		return d.AccidentYear >= dates[0] && d.AccidentYear <= dates[1];
+	});
+	return filtered_accidents
 }
