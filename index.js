@@ -88,7 +88,10 @@ function update_clusters(dates){
 			fillOpacity: 0.8 // Opacité du remplissage
 		});
 
-		marker.bindTooltip(filtered_accidents[i].AccidentSeverityCategory_fr);
+		marker.bindTooltip(
+			filtered_accidents[i].AccidentSeverityCategory_fr.charAt(0).toUpperCase() +
+			filtered_accidents[i].AccidentSeverityCategory_fr.slice(1)
+		);
 
 		markers.addLayer(marker);
 	}
