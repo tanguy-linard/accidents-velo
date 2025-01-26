@@ -1,5 +1,8 @@
 let accidents = [];
 
+// compteur du nombre de fois que l'animation de l'infobox a été executée, on limite à 3
+var animation_count = 0;
+
 // initialise le cluster des points	
 const markers = L.markerClusterGroup({
 	// iconCreateFunction: function (cluster) {
@@ -88,10 +91,20 @@ function update_clusters(dates){
 			fillOpacity: 0.8 // Opacité du remplissage
 		});
 
+		// donnees de l'accident
+		marker.accident_data = filtered_accidents[i];
+		
+		// tooltip
 		marker.bindTooltip(
 			filtered_accidents[i].AccidentSeverityCategory_fr.charAt(0).toUpperCase() +
 			filtered_accidents[i].AccidentSeverityCategory_fr.slice(1)
 		);
+
+		// gestionnaire d'événement pour le clic
+		marker.on('click', function () {
+			console.log('Détails de l\'accident :', this.accident_data);
+			display_accident_data(this.accident_data);
+		});
 
 		markers.addLayer(marker);
 	}
@@ -103,3 +116,48 @@ function filter_accidents(dates){
 	});
 	return filtered_accidents
 }
+
+// change le texte dans l'infobox en fonction de l'accident sélectionné
+function display_accident_data(accident){
+
+	month = accident.AccidentMonth_fr.charAt(0).toUpperCase() + accident.AccidentMonth_fr.slice(1);
+	year = accident.AccidentYear
+	weekday = accident.AccidentWeekDay_fr.charAt(0).toUpperCase() + accident.AccidentWeekDay_fr.slice(1);
+	hour = Math.floor(accident.AccidentHour) + 'h';
+	type = accident.AccidentType_fr.charAt(0).toUpperCase() + accident.AccidentType_fr.slice(1);
+	severity = accident.AccidentSeverityCategory_fr.charAt(0).toUpperCase() + accident.AccidentSeverityCategory_fr.slice(1);
+	road = accident.RoadType_fr.charAt(0).toUpperCase() + accident.RoadType_fr.slice(1);
+  
+	// cree le contenu de l'infobox a partir des donnees
+	var text = '<table class="infotable">';
+	text += '<tr>';
+	text +=   '<td class="label"><b>Mois et année:</b></td>';
+	text +=   '<td>' + month + ' ' + year + '</td>';
+	text += '</tr><tr>';
+	text +=   '<td class="label"><b>Jour de la semaine:</b></td>';
+	text +=   '<td>' + weekday + '</td>';
+	text += '</tr><tr>';
+	text +=   '<td class="label"><b>Heure:</b></td>';
+	text +=   '<td>' + hour + '</td>';
+	text += '</tr><tr>';
+	text +=   '<td class="label"><b>Type d\'accident:</b></td>';
+	text +=   '<td>' + type + '</td>';
+	text += '</tr><tr>';
+	text +=   '<td class="label"><b>Sévérité:</b></td>';
+	text +=   '<td>' + severity + '</td>';
+	text += '</tr><tr>';
+	text +=   '<td class="label"><b>Type de route:</b></td>';
+	text +=   '<td>' + road + '</td>';
+	text += '</tr><tr>';
+	
+	// remplace le texte dans l'infobox
+	$('.infobox').html(text);
+  
+	// animation de l'infobox pour les 3 premieres regions selectionnees
+	if (animation_count < 3) {
+	  for (let i = 0; i < 3; i++) {
+		$('.infobox').fadeOut(250).fadeIn(250);
+	  }
+	  animation_count += 1;
+	}
+  }
