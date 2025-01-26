@@ -52,7 +52,7 @@ h2 {
     align-items: center;
 }
 
-.sidebar {
+.infobar {
     position: absolute;
     top: 100px;
     left: calc(100vw - 350px);
