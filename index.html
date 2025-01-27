@@ -36,8 +36,24 @@
     <!-- sidebar -->
     <div class = "infobar">
 
+        <!-- boutons pour choisir type de region affiché -->
+         Sévérite de l'accident
+      <div class = "button">
+        <input id = "tout" type="radio" name="severityButton" value="all" checked/>
+        <label for="tout">Tout</label>
+
+        <input id = "leger" type="radio" name="severityButton" value="as3" />
+        <label for="leger">Léger</label>
+
+        <input id="grave" type="radio" name="severityButton" value="as2" />
+        <label for="grave">Grave</label>
+
+        <input id="deces" type="radio" name="severityButton" value="as1" />
+        <label for="deces">Décès</label>
+      </div>
+
       <!-- affiche information de la region selectionne -->
-      <div class = "infobox">
+      <div class = "infobox" style="border-top: 1px solid #c0c0c0; margin-top: 10px;">
         <p><i>Cliquez sur un accident pour afficher les détails.</i></p>
       </div>
 

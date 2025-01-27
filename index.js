@@ -38,7 +38,7 @@ noUiSlider.create(dateSlider, {
     },
     tooltips: {
         to: function (value) {
-            return Math.round(value); // Supprime les décimales
+            return Math.round(value);
         },
         from: function (value) {
             return value;
@@ -47,8 +47,8 @@ noUiSlider.create(dateSlider, {
     step: 1
 });
 
-dateSlider.noUiSlider.on('change', function (values, handle) {
-    update_clusters(values)
+dateSlider.noUiSlider.on('change', function () {
+    update_clusters()
 });
 
 /* 
@@ -75,10 +75,13 @@ function draw_map() {
 	mymap.addLayer(markers);
 }
 
-function update_clusters(dates){
+function update_clusters(){
+
+	// vide le cluster
 	markers.clearLayers();
 
-	filtered_accidents = filter_accidents(dates)
+	// filtre les accidents
+	filtered_accidents = filter_accidents()
 
 	// ajoute les points au cluster
 	for (var i = 0; i < filtered_accidents.length; i++) {
@@ -102,7 +105,6 @@ function update_clusters(dates){
 
 		// gestionnaire d'événement pour le clic
 		marker.on('click', function () {
-			console.log('Détails de l\'accident :', this.accident_data);
 			display_accident_data(this.accident_data);
 		});
 
@@ -110,12 +112,26 @@ function update_clusters(dates){
 	}
 }
 
-function filter_accidents(dates){
+function filter_accidents(){
+	dates = dateSlider.noUiSlider.get().map(Number);
+
+	severity = document.querySelector('input[name="severityButton"]:checked').value;
+	if (severity == "all") {
+		severity = ["as1", "as2", "as3"];
+	}
+
 	filtered_accidents = accidents.filter(function (d) {
-		return d.AccidentYear >= dates[0] && d.AccidentYear <= dates[1];
+		return d.AccidentYear >= dates[0] && d.AccidentYear <= dates[1] && severity.includes(d.AccidentSeverityCategory);
 	});
 	return filtered_accidents
 }
+
+// ecouteur d'evenement sur le bouton pour filter les accidents
+document.querySelectorAll('input[name="severityButton"]').forEach(function(radio) {
+	radio.addEventListener('change', function() {
+		update_clusters();
+	});
+  });
 
 // change le texte dans l'infobox en fonction de l'accident sélectionné
 function display_accident_data(accident){
