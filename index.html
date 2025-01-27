@@ -23,12 +23,6 @@
             <h1>Accidents à vélo en Suisse</h1>
             <h2>Avec dommage corporel depuis 2011</h2>
         </div>
-
-        <!-- Slider -->
-        <div id="slider-container">
-            <div id="date-range-slider"></div>
-            <span id="selected-dates"></span>
-        </div>
     </div>
 
     <div id="map"></div>
@@ -36,8 +30,14 @@
     <!-- sidebar -->
     <div class = "infobar">
 
+    <!-- Slider -->
+    <div id="slider-container">
+        <div id="date-range-slider"></div>
+        <span id="selected-dates"></span>
+    </div>
+
     <!-- checkbox pour choisir la severité de l'accident -->
-      <div class = "checkboxSeverity">
+      <div class = "checkboxSeverity" style="border-top: 1px solid #c0c0c0; margin-top: 10px;">
         <h2>Sévérite de l'accident</h2>
         <input id = "as3" type="checkbox" name="checkboxSeverity" value="as3" checked/>
         <label for="leger">Léger</label>
@@ -50,30 +50,45 @@
       </div>
 
     <!-- boutons pour choisir le type de route -->
-    <div class = "checkboxRoad" style="border-top: 1px solid #c0c0c0; margin-top: 10px;">
-    <h2>Type de route</h2>
-      <input id = "rt430" type="checkbox" name="checkboxRoad" value="rt430" checked/>
-      <label for="autoroute">Autortoute</label>
-
-      <input id="rt431" type="checkbox" name="checkboxRoad" value="rt431" checked/>
-      <label for="semi-autoroute">Semi-autoroute</label><br>
-
-      <input id="rt432" type="checkbox" name="checkboxRoad" value="rt432" checked/>
-      <label for="route principale">Route principale</label>
-
-      <input id="rt433" type="checkbox" name="checkboxRoad" value="rt433" checked/>
-      <label for="route secondaire">Route secondaire</label><br>
-
-      <input id="rt434" type="checkbox" name="checkboxRoad" value="rt434" checked/>
-      <label for="installation annexe">Installation annexe</label>
-
-      <input id="rt439" type="checkbox" name="checkboxRoad" value="rt439" checked/>
-      <label for="autre">Autre</label>
+    <div class="checkboxRoad" style="border-top: 1px solid #c0c0c0; margin-top: 10px;">
+        <h2>Type de route</h2>
+        <table>
+            <tr>
+                <td>
+                    <input id="rt430" type="checkbox" name="checkboxRoad" value="rt430" checked />
+                    <label for="rt430">Autoroute</label>
+                </td>
+                <td>
+                    <input id="rt431" type="checkbox" name="checkboxRoad" value="rt431" checked />
+                    <label for="rt431">Semi-autoroute</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input id="rt432" type="checkbox" name="checkboxRoad" value="rt432" checked />
+                    <label for="rt432">Route principale</label>
+                </td>
+                <td>
+                    <input id="rt433" type="checkbox" name="checkboxRoad" value="rt433" checked />
+                    <label for="rt433">Route secondaire</label>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input id="rt434" type="checkbox" name="checkboxRoad" value="rt434" checked />
+                    <label for="rt434">Installation annexe</label>
+                </td>
+                <td>
+                    <input id="rt439" type="checkbox" name="checkboxRoad" value="rt439" checked />
+                    <label for="rt439">Autre</label>
+                </td>
+            </tr>
+        </table>
     </div>
 
     <!-- boutons pour choisir le type d'accident -->
     <div class = "checkboxType" style="border-top: 1px solid #c0c0c0; margin-top: 10px;">
-        <h2>Type d'accident'</h2>
+        <h2>Type d'accident</h2>
           <input id = "at0" type="checkbox" name="checkboxType" value="at0" checked/>
           <label for="dérapage ou Pourcentage de maîtrise">Dérapage ou perte de maîtrise</label><br>
 

@@ -13,6 +13,10 @@ h2 {
     font-size: 12pt;
 }
 
+table {
+    font-size: 10pt;
+  }
+
 #map {
     position: absolute;
     top: 100px;
@@ -24,8 +28,8 @@ h2 {
 }
 
 #date-range-slider {
-    width: 300px; /* Ajustez la largeur selon vos besoins */
-    margin: 10px auto; /* Centre le slider */
+    width: 280px; /* Ajustez la largeur selon vos besoins */
+    margin: 30px auto; /* Centre le slider */
     display: block; /* S'assure que le slider occupe toute sa largeur */
 }
 
