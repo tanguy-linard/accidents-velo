@@ -115,17 +115,29 @@ function update_clusters(){
 function filter_accidents(){
 	dates = dateSlider.noUiSlider.get().map(Number);
 
-	severities = Array.from(document.querySelectorAll('.button input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+	severities = Array.from(document.querySelectorAll('.checkboxSeverity input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+
+	roads = Array.from(document.querySelectorAll('.checkboxRoad input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
 
 	filtered_accidents = accidents.filter(function (d) {
-		return d.AccidentYear >= dates[0] && d.AccidentYear <= dates[1] && severities.includes(d.AccidentSeverityCategory);
+		return d.AccidentYear >= dates[0] && d.AccidentYear <= dates[1] && severities.includes(d.AccidentSeverityCategory) && roads.includes(d.RoadType);
 	});
 	return filtered_accidents
 }
+/*
+// ecouteur d'événements
+*/
+// sévérité
+document.querySelectorAll('input[name="checkboxSeverity"]').forEach(function(checkbox) {
+	checkbox.addEventListener('change', function() {
+		update_clusters();
+	});
+  });
 
-// ecouteur d'evenement sur le bouton pour filter les accidents
-document.querySelectorAll('input[name="severityButton"]').forEach(function(radio) {
-	radio.addEventListener('change', function() {
+// route
+document.querySelectorAll('input[name="checkboxRoad"]').forEach(function(checkbox) {
+	checkbox.addEventListener('change', function() {
+		console.log("change")
 		update_clusters();
 	});
   });

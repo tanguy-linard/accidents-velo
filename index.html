@@ -36,18 +36,40 @@
     <!-- sidebar -->
     <div class = "infobar">
 
-        <!-- boutons pour choisir type de region affiché -->
-         Sévérite de l'accident
-      <div class = "button">
-        <input id = "leger" type="checkbox" name="severityButton" value="as3" checked/>
+    <!-- checkbox pour choisir la severité de l'accident -->
+      <div class = "checkboxSeverity">
+        <h2>Sévérite de l'accident</h2>
+        <input id = "leger" type="checkbox" name="checkboxSeverity" value="as3" checked/>
         <label for="leger">Léger</label>
 
-        <input id="grave" type="checkbox" name="severityButton" value="as2" checked/>
+        <input id="grave" type="checkbox" name="checkboxSeverity" value="as2" checked/>
         <label for="grave">Grave</label>
 
-        <input id="deces" type="checkbox" name="severityButton" value="as1" checked/>
+        <input id="deces" type="checkbox" name="checkboxSeverity" value="as1" checked/>
         <label for="deces">Décès</label>
       </div>
+
+    <!-- boutons pour choisir le type de route -->
+    <div class = "checkboxRoad" style="border-top: 1px solid #c0c0c0; margin-top: 10px;">
+    <h2>Type de route</h2>
+      <input id = "rt430" type="checkbox" name="checkboxRoad" value="rt430" checked/>
+      <label for="autoroute">Autortoute</label>
+
+      <input id="rt431" type="checkbox" name="checkboxRoad" value="rt431" checked/>
+      <label for="semi-autoroute">Semi-autoroute</label><br>
+
+      <input id="rt432" type="checkbox" name="checkboxRoad" value="rt432" checked/>
+      <label for="route principale">Route principale</label>
+
+      <input id="rt433" type="checkbox" name="checkboxRoad" value="rt433" checked/>
+      <label for="route secondaire">Route secondaire</label><br>
+
+      <input id="rt434" type="checkbox" name="checkboxRoad" value="rt434" checked/>
+      <label for="installation annexe">Installation annexe</label>
+
+      <input id="rt439" type="checkbox" name="checkboxRoad" value="rt439" checked/>
+      <label for="autre">Autre</label>
+    </div>
 
       <!-- affiche information de la region selectionne -->
       <div class = "infobox" style="border-top: 1px solid #c0c0c0; margin-top: 10px;">
