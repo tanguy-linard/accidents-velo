@@ -119,8 +119,10 @@ function filter_accidents(){
 
 	roads = Array.from(document.querySelectorAll('.checkboxRoad input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
 
+	types = Array.from(document.querySelectorAll('.checkboxType input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+
 	filtered_accidents = accidents.filter(function (d) {
-		return d.AccidentYear >= dates[0] && d.AccidentYear <= dates[1] && severities.includes(d.AccidentSeverityCategory) && roads.includes(d.RoadType);
+		return d.AccidentYear >= dates[0] && d.AccidentYear <= dates[1] && severities.includes(d.AccidentSeverityCategory) && roads.includes(d.RoadType) && types.includes(d.AccidentType);
 	});
 	return filtered_accidents
 }
@@ -137,7 +139,13 @@ document.querySelectorAll('input[name="checkboxSeverity"]').forEach(function(che
 // route
 document.querySelectorAll('input[name="checkboxRoad"]').forEach(function(checkbox) {
 	checkbox.addEventListener('change', function() {
-		console.log("change")
+		update_clusters();
+	});
+  });
+
+// type
+document.querySelectorAll('input[name="checkboxType"]').forEach(function(checkbox) {
+	checkbox.addEventListener('change', function() {
 		update_clusters();
 	});
   });
