@@ -8,7 +8,6 @@ h1 {
     margin: 0px;
 }
 
-
 h2 {
     margin: 2px;
     font-size: 12pt;
@@ -20,7 +19,7 @@ h2 {
     left: 20px;
     background-color: #eee;
     border: 1px solid #666;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 120px);
     width: calc(100vw - 375px);
 }
 
@@ -58,7 +57,7 @@ h2 {
     left: calc(100vw - 350px);
     background-color: #eee;
     border: 1px solid #666;
-    height: calc(100vh - 130px);
+    height: calc(100vh - 150px);
     width: 300px;
     padding: 15px;
 }

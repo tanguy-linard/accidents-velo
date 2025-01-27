@@ -115,13 +115,10 @@ function update_clusters(){
 function filter_accidents(){
 	dates = dateSlider.noUiSlider.get().map(Number);
 
-	severity = document.querySelector('input[name="severityButton"]:checked').value;
-	if (severity == "all") {
-		severity = ["as1", "as2", "as3"];
-	}
+	severities = Array.from(document.querySelectorAll('.button input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
 
 	filtered_accidents = accidents.filter(function (d) {
-		return d.AccidentYear >= dates[0] && d.AccidentYear <= dates[1] && severity.includes(d.AccidentSeverityCategory);
+		return d.AccidentYear >= dates[0] && d.AccidentYear <= dates[1] && severities.includes(d.AccidentSeverityCategory);
 	});
 	return filtered_accidents
 }
