@@ -30,25 +30,25 @@ document.addEventListener("DOMContentLoaded", async function (event) {
 const dateSlider = document.getElementById('date-range-slider');
 
 noUiSlider.create(dateSlider, {
-    start: [2011, 2024],
-    connect: true,
-    range: {
-        min: 2011,
-        max: 2024
-    },
-    tooltips: {
-        to: function (value) {
-            return Math.round(value);
-        },
-        from: function (value) {
-            return value;
-        }
-    },
-    step: 1
+	start: [2011, 2024],
+	connect: true,
+	range: {
+		min: 2011,
+		max: 2024
+	},
+	tooltips: {
+		to: function (value) {
+			return Math.round(value);
+		},
+		from: function (value) {
+			return value;
+		}
+	},
+	step: 1
 });
 
 dateSlider.noUiSlider.on('change', function () {
-    update_clusters()
+	update_clusters()
 });
 
 /* 
@@ -75,7 +75,7 @@ function draw_map() {
 	mymap.addLayer(markers);
 }
 
-function update_clusters(){
+function update_clusters() {
 
 	// vide le cluster
 	markers.clearLayers();
@@ -96,7 +96,7 @@ function update_clusters(){
 
 		// donnees de l'accident
 		marker.accident_data = filtered_accidents[i];
-		
+
 		// tooltip
 		marker.bindTooltip(
 			filtered_accidents[i].AccidentSeverityCategory_fr.charAt(0).toUpperCase() +
@@ -112,7 +112,7 @@ function update_clusters(){
 	}
 }
 
-function filter_accidents(){
+function filter_accidents() {
 	dates = dateSlider.noUiSlider.get().map(Number);
 
 	severities = Array.from(document.querySelectorAll('.checkboxSeverity input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
@@ -130,28 +130,28 @@ function filter_accidents(){
 // ecouteur d'événements
 */
 // sévérité
-document.querySelectorAll('input[name="checkboxSeverity"]').forEach(function(checkbox) {
-	checkbox.addEventListener('change', function() {
+document.querySelectorAll('input[name="checkboxSeverity"]').forEach(function (checkbox) {
+	checkbox.addEventListener('change', function () {
 		update_clusters();
 	});
-  });
+});
 
 // route
-document.querySelectorAll('input[name="checkboxRoad"]').forEach(function(checkbox) {
-	checkbox.addEventListener('change', function() {
+document.querySelectorAll('input[name="checkboxRoad"]').forEach(function (checkbox) {
+	checkbox.addEventListener('change', function () {
 		update_clusters();
 	});
-  });
+});
 
 // type
-document.querySelectorAll('input[name="checkboxType"]').forEach(function(checkbox) {
-	checkbox.addEventListener('change', function() {
+document.querySelectorAll('input[name="checkboxType"]').forEach(function (checkbox) {
+	checkbox.addEventListener('change', function () {
 		update_clusters();
 	});
-  });
+});
 
 // change le texte dans l'infobox en fonction de l'accident sélectionné
-function display_accident_data(accident){
+function display_accident_data(accident) {
 
 	month = accident.AccidentMonth_fr.charAt(0).toUpperCase() + accident.AccidentMonth_fr.slice(1);
 	year = accident.AccidentYear
@@ -160,37 +160,37 @@ function display_accident_data(accident){
 	type = accident.AccidentType_fr.charAt(0).toUpperCase() + accident.AccidentType_fr.slice(1);
 	severity = accident.AccidentSeverityCategory_fr.charAt(0).toUpperCase() + accident.AccidentSeverityCategory_fr.slice(1);
 	road = accident.RoadType_fr.charAt(0).toUpperCase() + accident.RoadType_fr.slice(1);
-  
+
 	// cree le contenu de l'infobox a partir des donnees
 	var text = '<table class="infotable">';
 	text += '<tr>';
-	text +=   '<td class="label"><b>Mois et année:</b></td>';
-	text +=   '<td>' + month + ' ' + year + '</td>';
+	text += '<td class="label"><b>Mois et année:</b></td>';
+	text += '<td>' + month + ' ' + year + '</td>';
 	text += '</tr><tr>';
-	text +=   '<td class="label"><b>Jour de la semaine:</b></td>';
-	text +=   '<td>' + weekday + '</td>';
+	text += '<td class="label"><b>Jour:</b></td>';
+	text += '<td>' + weekday + '</td>';
 	text += '</tr><tr>';
-	text +=   '<td class="label"><b>Heure:</b></td>';
-	text +=   '<td>' + hour + '</td>';
+	text += '<td class="label"><b>Heure:</b></td>';
+	text += '<td>' + hour + '</td>';
 	text += '</tr><tr>';
-	text +=   '<td class="label"><b>Type d\'accident:</b></td>';
-	text +=   '<td>' + type + '</td>';
+	text += '<td class="label"><b>Type d\'accident:</b></td>';
+	text += '<td>' + type + '</td>';
 	text += '</tr><tr>';
-	text +=   '<td class="label"><b>Sévérité:</b></td>';
-	text +=   '<td>' + severity + '</td>';
+	text += '<td class="label"><b>Sévérité:</b></td>';
+	text += '<td>' + severity + '</td>';
 	text += '</tr><tr>';
-	text +=   '<td class="label"><b>Type de route:</b></td>';
-	text +=   '<td>' + road + '</td>';
+	text += '<td class="label"><b>Type de route:</b></td>';
+	text += '<td>' + road + '</td>';
 	text += '</tr><tr>';
-	
+
 	// remplace le texte dans l'infobox
 	$('.infobox').html(text);
-  
+
 	// animation de l'infobox pour les 3 premieres regions selectionnees
 	if (animation_count < 3) {
-	  for (let i = 0; i < 3; i++) {
-		$('.infobox').fadeOut(250).fadeIn(250);
-	  }
-	  animation_count += 1;
+		for (let i = 0; i < 3; i++) {
+			$('.infobox').fadeOut(250).fadeIn(250);
+		}
+		animation_count += 1;
 	}
-  }
+}
