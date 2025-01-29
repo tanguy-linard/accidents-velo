@@ -25,12 +25,14 @@
         </div>
     </div>
 
+    <!-- Conteneur pour la carte -->
     <div id="map"></div>
 
     <!-- sidebar -->
     <div class="infobar">
 
         <!-- Slider -->
+         <h2>Années</h2>
         <div id="slider-container">
             <div id="date-range-slider"></div>
             <span id="selected-dates"></span>
@@ -87,40 +89,66 @@
         </div>
 
         <!-- boutons pour choisir le type d'accident -->
-        <div class="checkboxType" style="border-top: 1px solid #c0c0c0; margin-top: 10px;">
+        <div class="checkboxType" style="border-top: 1px solid #c0c0c0; margin-top: 10px; padding-top: 10px;">
             <h2>Type d'accident</h2>
-            <input id="at0" type="checkbox" name="checkboxType" value="at0" checked />
-            <label for="dérapage ou Pourcentage de maîtrise">Dérapage ou perte de maîtrise</label><br>
-
-            <input id="at1" type="checkbox" name="checkboxType" value="at1" checked />
-            <label for="Changement de voie">Changement de voie</label><br>
-
-            <input id="at2" type="checkbox" name="checkboxType" value="at2" checked />
-            <label for="tamponnement">Tamponnement</label><br>
-
-            <input id="at3" type="checkbox" name="checkboxType" value="at3" checked />
-            <label for="sortie de route">Sortie de route</label><br>
-
-            <input id="at4" type="checkbox" name="checkboxType" value="at4" checked />
-            <label for="en s engagaent sur la route">En s'engageant sur la route</label><br>
-
-            <input id="at5" type="checkbox" name="checkboxType" value="at5" checked />
-            <label for="en traversant la route">En traversant la route</label><br>
-
-            <input id="at6" type="checkbox" name="checkboxType" value="at6" checked />
-            <label for="collision frontale">Collision frontale</label><br>
-
-            <input id="at7" type="checkbox" name="checkboxType" value="at7" checked />
-            <label for="en parquant">En parquant</label><br>
-
-            <input id="at8" type="checkbox" name="checkboxType" value="at8" checked />
-            <label for="avec piéton">Avec piéton</label><br>
-
-            <input id="at9" type="checkbox" name="checkboxType" value="at9" checked />
-            <label for="avec animal">Avec animal</label><br>
-
-            <input id="at00" type="checkbox" name="checkboxType" value="at00" checked />
-            <label for="autre">Autre</label><br>
+            <table>
+                <tr>
+                    <td>
+                        <input id="at0" type="checkbox" name="checkboxType" value="at0" checked />
+                        <label for="at0">Dérapage</label>
+                    </td>
+                    <td>
+                        <input id="at6" type="checkbox" name="checkboxType" value="at6" checked />
+                        <label for="at6">Collision frontale</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id="at1" type="checkbox" name="checkboxType" value="at1" checked />
+                        <label for="at1">Changement de voie</label>
+                    </td>
+                    <td>
+                        <input id="at7" type="checkbox" name="checkboxType" value="at7" checked />
+                        <label for="at7">En parquant</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id="at2" type="checkbox" name="checkboxType" value="at2" checked />
+                        <label for="at2">Tamponnement</label>
+                    </td>
+                    <td>
+                        <input id="at8" type="checkbox" name="checkboxType" value="at8" checked />
+                        <label for="at8">Avec piéton</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id="at3" type="checkbox" name="checkboxType" value="at3" checked />
+                        <label for="at3">Sortie de route</label>
+                    </td>
+                    <td>
+                        <input id="at9" type="checkbox" name="checkboxType" value="at9" checked />
+                        <label for="at9">Avec animal</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id="at4" type="checkbox" name="checkboxType" value="at4" checked />
+                        <label for="at4">En s'engageant sur la route</label>
+                    </td>
+                    <td>
+                        <input id="at00" type="checkbox" name="checkboxType" value="at00" checked />
+                        <label for="at00">Autre</label>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input id="at5" type="checkbox" name="checkboxType" value="at5" checked />
+                        <label for="at5">En traversant la route</label>
+                    </td>
+                </tr>
+            </table>
         </div>
 
         <!-- affiche information de la region selectionne -->
