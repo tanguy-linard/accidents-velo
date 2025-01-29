@@ -1,5 +1,7 @@
 let accidents = [];
 
+const date_range = [2011, 2023];
+
 // compteur du nombre de fois que l'animation de l'infobox a été executée, on limite à 3
 var animation_count = 0;
 
@@ -18,23 +20,101 @@ const markers = L.markerClusterGroup({
 	// }
 });
 
+/*
+traitement données
+*/
+function filter_accidents() {
+	dates = dateSlider.noUiSlider.get().map(Number);
+
+	severities = Array.from(document.querySelectorAll('.checkboxSeverity input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+
+	roads = Array.from(document.querySelectorAll('.checkboxRoad input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+
+	types = Array.from(document.querySelectorAll('.checkboxType input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+
+	filtered_accidents = accidents.filter(function (d) {
+		return d.AccidentYear >= dates[0] && d.AccidentYear <= dates[1] && severities.includes(d.AccidentSeverityCategory) && roads.includes(d.RoadType) && types.includes(d.AccidentType);
+	});
+	return filtered_accidents
+}
+
+function count_accidents(accidents) {
+	// Crée un dictionnaire pour compter les accidents par mois et année
+	let monthly_accidents = {};
+
+	filtered_accidents.forEach(d => {
+		let year = d.AccidentYear;
+		let month = d.AccidentMonth; // Assure-toi que la colonne est bien `AccidentMonth`
+
+		// Utilise une clé pour combiner l'année et le mois
+		let key = `${year}-${month}`;
+
+		// Si cette clé n'existe pas, crée-la et initialise avec 0
+		if (!monthly_accidents[key]) {
+			monthly_accidents[key] = 0;
+		}
+
+		// Incrémente le nombre d'accidents pour ce mois
+		monthly_accidents[key]++;
+	});
+
+	// Transforme l'objet en tableau avec `year-month` comme clé et `count` comme valeur
+	let accident_count = [];
+	for (let key in monthly_accidents) {
+		let [year, month] = key.split("-");
+		accident_count.push({
+			year: parseInt(year),
+			month: parseInt(month),
+			count: monthly_accidents[key]
+		});
+	}
+
+	// Trie par date (année, puis mois)
+	accident_count.sort((a, b) => new Date(a.year, a.month - 1) - new Date(b.year, b.month - 1));
+
+	return accident_count;
+}
+
+function accumulate_accidents(accident_count) {
+	let cumulative_accidents = [];
+	let cumulative_count = 0;
+
+	// Cumul des accidents
+	accident_count.forEach(d => {
+		cumulative_count += d.count; // Ajoute le nombre d'accidents du mois courant
+		cumulative_accidents.push({
+			...d,
+			cumulativeCount: cumulative_count // Ajoute le total cumulé
+		});
+	});
+
+	return cumulative_accidents;
+}
+
+/*
+// ecouteur d'événements
+*/
+// ccharger données
 document.addEventListener("DOMContentLoaded", async function (event) {
 	// importation du fichier csv avec les accidents de vélo
 	accidents = await d3.csv('data/bike_accidents.csv');
 
 	// dessine la carte
 	draw_map();
+
+	// dessine le graphique
+	draw_linechart()
 });
 
-// Crée le slider
+// dates
 const dateSlider = document.getElementById('date-range-slider');
 
 noUiSlider.create(dateSlider, {
-	start: [2011, 2024],
+	start: date_range,
 	connect: true,
 	range: {
-		min: 2011,
-		max: 2024
+		min: date_range[0],
+		max: date_range[1]
 	},
 	tooltips: {
 		to: function (value) {
@@ -48,8 +128,44 @@ noUiSlider.create(dateSlider, {
 });
 
 dateSlider.noUiSlider.on('change', function () {
-	update_clusters()
+	update_charts();
 });
+
+// sévérité
+document.querySelectorAll('input[name="checkboxSeverity"]').forEach(function (checkbox) {
+	checkbox.addEventListener('change', function () {
+		update_charts();
+	});
+});
+
+// route
+document.querySelectorAll('input[name="checkboxRoad"]').forEach(function (checkbox) {
+	checkbox.addEventListener('change', function () {
+		update_charts();
+	});
+});
+
+// type
+document.querySelectorAll('input[name="checkboxType"]').forEach(function (checkbox) {
+	checkbox.addEventListener('change', function () {
+		update_charts();
+	});
+});
+
+function showTab(tabId) {
+	// Masquer tous les contenus
+	document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+	document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+
+	// Afficher le bon onglet
+	document.getElementById(tabId).classList.add('active');
+	document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
+}
+
+function update_charts() {
+	update_clusters();
+	draw_linechart();
+}
 
 /* 
   dessine la carte
@@ -69,7 +185,7 @@ function draw_map() {
 	});
 	background_map.addTo(mymap);
 
-	update_clusters([2011, 2024]);
+	update_clusters(date_range);
 
 	// ajoute le cluster à la carte
 	mymap.addLayer(markers);
@@ -81,7 +197,7 @@ function update_clusters() {
 	markers.clearLayers();
 
 	// filtre les accidents
-	filtered_accidents = filter_accidents()
+	filtered_accidents = filter_accidents();
 
 	// ajoute les points au cluster
 	for (var i = 0; i < filtered_accidents.length; i++) {
@@ -111,44 +227,6 @@ function update_clusters() {
 		markers.addLayer(marker);
 	}
 }
-
-function filter_accidents() {
-	dates = dateSlider.noUiSlider.get().map(Number);
-
-	severities = Array.from(document.querySelectorAll('.checkboxSeverity input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
-
-	roads = Array.from(document.querySelectorAll('.checkboxRoad input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
-
-	types = Array.from(document.querySelectorAll('.checkboxType input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
-
-	filtered_accidents = accidents.filter(function (d) {
-		return d.AccidentYear >= dates[0] && d.AccidentYear <= dates[1] && severities.includes(d.AccidentSeverityCategory) && roads.includes(d.RoadType) && types.includes(d.AccidentType);
-	});
-	return filtered_accidents
-}
-/*
-// ecouteur d'événements
-*/
-// sévérité
-document.querySelectorAll('input[name="checkboxSeverity"]').forEach(function (checkbox) {
-	checkbox.addEventListener('change', function () {
-		update_clusters();
-	});
-});
-
-// route
-document.querySelectorAll('input[name="checkboxRoad"]').forEach(function (checkbox) {
-	checkbox.addEventListener('change', function () {
-		update_clusters();
-	});
-});
-
-// type
-document.querySelectorAll('input[name="checkboxType"]').forEach(function (checkbox) {
-	checkbox.addEventListener('change', function () {
-		update_clusters();
-	});
-});
 
 // change le texte dans l'infobox en fonction de l'accident sélectionné
 function display_accident_data(accident) {
@@ -195,12 +273,102 @@ function display_accident_data(accident) {
 	}
 }
 
-function showTab(tabId) {
-	// Masquer tous les contenus
-	document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
-	document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+function draw_linechart() {
 
-	// Afficher le bon onglet
-	document.getElementById(tabId).classList.add('active');
-	document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
+	// compte accidents
+	accident_count = count_accidents(filter_accidents(accidents));
+	cumulative_accidents = accumulate_accidents(accident_count);
+
+	cumulative_accidents.forEach(d => {
+		d.date = new Date(d.year, d.month - 1);
+	});
+
+	// dimensions
+	const dim_container = d3.select(".tab-content")
+	const margin = { top: 50, right: 50, bottom: 50, left: 70 };
+	const width = parseInt(dim_container.style("width"));
+	const height = parseInt(dim_container.style("height"));
+	const innerWidth = width - margin.left - margin.right;
+	const innerHeight = height - margin.top - margin.bottom;
+
+	// svf container et vide le contenu
+	d3.select("#chart-container").selectAll("*").remove();
+	const container = d3.select("#chart-container")
+		.append("svg")
+		.attr("width", width)
+		.attr("height", height);
+
+	// groupe svg
+	const chart = container.append("g")
+		.attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+	// Échelles
+	const xScale = d3.scaleTime()
+		.domain(d3.extent(cumulative_accidents, d => d.date))
+		.range([0, innerWidth]);
+
+	const yScale = d3.scaleLinear()
+		.domain([0, d3.max(cumulative_accidents, d => d.cumulativeCount)])
+		.nice()
+		.range([innerHeight, 0]);
+
+	// Axe x
+	const xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%b %Y"));
+	chart.append("g")
+		.attr("transform", `translate(0, ${innerHeight})`)
+		.call(xAxis)
+		.selectAll("text")
+		.attr("transform", "rotate(-45)")
+		.style("text-anchor", "end");
+
+	// Axe Y (Nombre d'accidents)
+	const yAxis = d3.axisLeft(yScale);
+	chart.append("g").call(yAxis);
+
+	// Créer la ligne
+	const line = d3.line()
+		.x(d => xScale(d.date))
+		.y(d => yScale(d.cumulativeCount));
+	//.curve(d3.curveMonotoneX); // Courbe plus fluide
+
+	// Ajouter la ligne au graphique
+	chart.append("path")
+		.datum(cumulative_accidents)
+		.attr("fill", "none")
+		.attr("stroke", "#3eb8ae")
+		.attr("stroke-width", 5)
+		.attr("d", line);
+
+	// Ajouter des cercles sur chaque point de la ligne pour interagir avec le tooltip
+	chart.selectAll(".dot")
+		.data(cumulative_accidents)
+		.enter()
+		.append("circle")
+		.attr("class", "dot")
+		.attr("cx", d => xScale(d.date))
+		.attr("cy", d => yScale(d.cumulativeCount))
+		.attr("r", 5)
+		.attr("fill", "transparent")
+		.on("mouseover", function (event, d) {
+			// Afficher le tooltip
+			tooltip.style("display", "block")
+				.html(`Mois: ${d3.timeFormat("%b %Y")(d.date)}<br>Accidents cumulés: ${d.cumulativeCount}`)
+				.style("left", `${event.pageX + 10}px`)
+				.style("top", `${event.pageY - 30}px`);
+		})
+		.on("mouseout", function () {
+			// Masquer le tooltip
+			tooltip.style("display", "none");
+		});
+
+	// Ajouter un tooltip
+	const tooltip = d3.select("body")
+		.append("div")
+		.style("position", "absolute")
+		.style("background", "white")
+		.style("border", "1px solid #ccc")
+		.style("padding", "5px")
+		.style("border-radius", "5px")
+		.style("display", "none")
+		.style("font-size", "12px");
 }

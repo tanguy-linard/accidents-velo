@@ -25,23 +25,20 @@
         </div>
     </div>
 
-    <!-- Conteneur pour la carte -->
-    <!-- <div id="map"></div> -->
-
+    <!-- Tabs -->
     <div class="tabs">
         <button class="tab-button active" onclick="showTab('map')">Carte</button>
         <button class="tab-button" onclick="showTab('chart')">Graphique</button>
     </div>
 
+    <!-- Conteneur pour la carte et le graphique -->
     <div class="tab-content">
         <div id="map" class="tab-pane active">
-            <!-- Intègre ici ta carte (Leaflet, Mapbox, etc.) -->
             <div id="map-container"></div>
         </div>
 
         <div id="chart" class="tab-pane">
-            <!-- Intègre ici ton graphique (Chart.js, D3.js, etc.) -->
-            <canvas id="chart-container"></canvas>
+            <div id="chart-container"></div>
         </div>
     </div>
 
@@ -57,7 +54,7 @@
 
         <!-- checkbox pour choisir la severité de l'accident -->
         <div class="checkboxSeverity" style="border-top: 1px solid #c0c0c0; margin-top: 10px;">
-            <h2>Sévérite de l'accident</h2>
+            <h2>Sévérité de l'accident</h2>
             <input id="as3" type="checkbox" name="checkboxSeverity" value="as3" checked />
             <label for="leger">Léger</label>
 
