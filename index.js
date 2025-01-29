@@ -57,7 +57,7 @@ dateSlider.noUiSlider.on('change', function () {
 function draw_map() {
 
 	// initialise la carte
-	var mymap = L.map('map');
+	var mymap = L.map('map-container');
 	mymap.setView([46.82, 8.28], 8);
 	mymap.setMinZoom(8);
 	mymap.setMaxBounds([[48.76, 12.68], [44.81, 3.89]]);
@@ -193,4 +193,14 @@ function display_accident_data(accident) {
 		}
 		animation_count += 1;
 	}
+}
+
+function showTab(tabId) {
+	// Masquer tous les contenus
+	document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+	document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+
+	// Afficher le bon onglet
+	document.getElementById(tabId).classList.add('active');
+	document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
 }
