@@ -1,8 +1,8 @@
 import pandas as pd
 
-input_file = 'RoadTrafficAccidentLocations.csv' # nom du fichier csv à filter
+input_file = 'RoadTrafficAccidentLocations.csv'
 
-output_file = 'bike_accidents.csv' # nom du fichier csv de sortie
+output_file = 'bike_accidents.csv'
 
 # chargement du fichier csv
 data = pd.read_csv(input_file)

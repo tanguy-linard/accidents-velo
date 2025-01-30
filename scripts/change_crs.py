@@ -1,8 +1,8 @@
 import pandas as pd
 from pyproj import Transformer
 
-input_file = 'bike_accidents_LV95.csv' # nom du fichier csv à filter
-output_file = 'bike_accidents.csv' # nom du fichier csv de sortie
+input_file = 'bike_accidents_LV95.csv'
+output_file = 'bike_accidents.csv'
 
 input_crs = 'EPSG:2056'
 output_crs = 'EPSG:4326'
