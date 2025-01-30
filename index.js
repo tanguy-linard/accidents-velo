@@ -1,5 +1,9 @@
+/* 
+	variables globales
+*/
 let accidents = [];
 
+// dates
 const date_range = [2011, 2023];
 
 // compteur du nombre de fois que l'animation de l'infobox a été executée, on limite à 3
@@ -9,80 +13,9 @@ var animation_count = 0;
 const markers = L.markerClusterGroup({});
 
 /*
-traitement données
+	écouteur d'événements
 */
-function filter_accidents() {
-	dates = dateSlider.noUiSlider.get().map(Number);
-
-	severities = Array.from(document.querySelectorAll('.checkboxSeverity input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
-
-	roads = Array.from(document.querySelectorAll('.checkboxRoad input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
-
-	types = Array.from(document.querySelectorAll('.checkboxType input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
-
-	filtered_accidents = accidents.filter(function (d) {
-		return d.AccidentYear >= dates[0] && d.AccidentYear <= dates[1] && severities.includes(d.AccidentSeverityCategory) && roads.includes(d.RoadType) && types.includes(d.AccidentType);
-	});
-	return filtered_accidents
-}
-
-function count_accidents(accidents) {
-	// Crée un dictionnaire pour compter les accidents par mois et année
-	let monthly_accidents = {};
-
-	filtered_accidents.forEach(d => {
-		let year = d.AccidentYear;
-		let month = d.AccidentMonth; // Assure-toi que la colonne est bien `AccidentMonth`
-
-		// Utilise une clé pour combiner l'année et le mois
-		let key = `${year}-${month}`;
-
-		// Si cette clé n'existe pas, crée-la et initialise avec 0
-		if (!monthly_accidents[key]) {
-			monthly_accidents[key] = 0;
-		}
-
-		// Incrémente le nombre d'accidents pour ce mois
-		monthly_accidents[key]++;
-	});
-
-	// Transforme l'objet en tableau avec `year-month` comme clé et `count` comme valeur
-	let accident_count = [];
-	for (let key in monthly_accidents) {
-		let [year, month] = key.split("-");
-		accident_count.push({
-			year: parseInt(year),
-			month: parseInt(month),
-			count: monthly_accidents[key]
-		});
-	}
-
-	// Trie par date (année, puis mois)
-	accident_count.sort((a, b) => new Date(a.year, a.month - 1) - new Date(b.year, b.month - 1));
-
-	return accident_count;
-}
-
-function accumulate_accidents(accident_count) {
-	let cumulative_accidents = [];
-	let cumulative_count = 0;
-
-	// Cumul des accidents
-	accident_count.forEach(d => {
-		cumulative_count += d.count; // Ajoute le nombre d'accidents du mois courant
-		cumulative_accidents.push({
-			...d,
-			cumulativeCount: cumulative_count // Ajoute le total cumulé
-		});
-	});
-
-	return cumulative_accidents;
-}
-
-/*
-// ecouteur d'événements
-*/
-// ccharger données
+// charger données et initialiser la carte et le graphique
 document.addEventListener("DOMContentLoaded", async function (event) {
 	// importation du fichier csv avec les accidents de vélo
 	accidents = await d3.csv('data/bike_accidents.csv');
@@ -91,10 +24,10 @@ document.addEventListener("DOMContentLoaded", async function (event) {
 	draw_map();
 
 	// dessine le graphique
-	draw_chart()
+	draw_chart(accidents)
 });
 
-// dates
+// dates slider
 const dateSlider = document.getElementById('date-range-slider');
 
 noUiSlider.create(dateSlider, {
@@ -151,12 +84,84 @@ function showTab(tabId) {
 }
 
 function update_charts() {
-	update_clusters();
-	draw_chart();
+	filtered_accidents = filter_accidents(accidents);
+	update_clusters(filtered_accidents);
+	draw_chart(filtered_accidents);
+}
+
+/*
+	traitement des données
+*/
+function filter_accidents() {
+	dates = dateSlider.noUiSlider.get().map(Number);
+
+	severities = Array.from(document.querySelectorAll('.checkboxSeverity input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+
+	roads = Array.from(document.querySelectorAll('.checkboxRoad input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+
+	types = Array.from(document.querySelectorAll('.checkboxType input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+
+	filtered_accidents = accidents.filter(function (d) {
+		return d.AccidentYear >= dates[0] && d.AccidentYear <= dates[1] && severities.includes(d.AccidentSeverityCategory) && roads.includes(d.RoadType) && types.includes(d.AccidentType);
+	});
+	return filtered_accidents
+}
+
+function count_accidents(filtered_accidents) {
+	// Crée un dictionnaire pour compter les accidents par mois et année
+	let monthly_accidents = {};
+
+	filtered_accidents.forEach(d => {
+		let year = d.AccidentYear;
+		let month = d.AccidentMonth; // Assure-toi que la colonne est bien `AccidentMonth`
+
+		// Utilise une clé pour combiner l'année et le mois
+		let key = `${year}-${month}`;
+
+		// Si cette clé n'existe pas, crée-la et initialise avec 0
+		if (!monthly_accidents[key]) {
+			monthly_accidents[key] = 0;
+		}
+
+		// Incrémente le nombre d'accidents pour ce mois
+		monthly_accidents[key]++;
+	});
+
+	// Transforme l'objet en tableau avec `year-month` comme clé et `count` comme valeur
+	let accident_count = [];
+	for (let key in monthly_accidents) {
+		let [year, month] = key.split("-");
+		accident_count.push({
+			year: parseInt(year),
+			month: parseInt(month),
+			count: monthly_accidents[key]
+		});
+	}
+
+	// Trie par date (année, puis mois)
+	accident_count.sort((a, b) => new Date(a.year, a.month - 1) - new Date(b.year, b.month - 1));
+
+	return accident_count;
+}
+
+function accumulate_accidents(accident_count) {
+	let cumulative_accidents = [];
+	let cumulative_count = 0;
+
+	// Cumul des accidents
+	accident_count.forEach(d => {
+		cumulative_count += d.count; // Ajoute le nombre d'accidents du mois courant
+		cumulative_accidents.push({
+			...d,
+			cumulativeCount: cumulative_count // Ajoute le total cumulé
+		});
+	});
+
+	return cumulative_accidents;
 }
 
 /* 
-  dessine la carte
+	carte
 */
 function draw_map() {
 
@@ -173,19 +178,16 @@ function draw_map() {
 	});
 	background_map.addTo(mymap);
 
-	update_clusters(date_range);
+	update_clusters(accidents);
 
 	// ajoute le cluster à la carte
 	mymap.addLayer(markers);
 }
 
-function update_clusters() {
+function update_clusters(filtered_accidents) {
 
 	// vide le cluster
 	markers.clearLayers();
-
-	// filtre les accidents
-	filtered_accidents = filter_accidents();
 
 	// ajoute les points au cluster
 	for (var i = 0; i < filtered_accidents.length; i++) {
@@ -216,56 +218,13 @@ function update_clusters() {
 	}
 }
 
-// change le texte dans l'infobox en fonction de l'accident sélectionné
-function display_accident_data(accident) {
-
-	month = accident.AccidentMonth_fr.charAt(0).toUpperCase() + accident.AccidentMonth_fr.slice(1);
-	year = accident.AccidentYear
-	weekday = accident.AccidentWeekDay_fr.charAt(0).toUpperCase() + accident.AccidentWeekDay_fr.slice(1);
-	hour = Math.floor(accident.AccidentHour) + 'h';
-	type = accident.AccidentType_fr.charAt(0).toUpperCase() + accident.AccidentType_fr.slice(1);
-	severity = accident.AccidentSeverityCategory_fr.charAt(0).toUpperCase() + accident.AccidentSeverityCategory_fr.slice(1);
-	road = accident.RoadType_fr.charAt(0).toUpperCase() + accident.RoadType_fr.slice(1);
-
-	// cree le contenu de l'infobox a partir des donnees
-	var text = '<table class="infotable">';
-	text += '<tr>';
-	text += '<td class="label"><b>Mois et année:</b></td>';
-	text += '<td>' + month + ' ' + year + '</td>';
-	text += '</tr><tr>';
-	text += '<td class="label"><b>Jour:</b></td>';
-	text += '<td>' + weekday + '</td>';
-	text += '</tr><tr>';
-	text += '<td class="label"><b>Heure:</b></td>';
-	text += '<td>' + hour + '</td>';
-	text += '</tr><tr>';
-	text += '<td class="label"><b>Type d\'accident:</b></td>';
-	text += '<td>' + type + '</td>';
-	text += '</tr><tr>';
-	text += '<td class="label"><b>Sévérité:</b></td>';
-	text += '<td>' + severity + '</td>';
-	text += '</tr><tr>';
-	text += '<td class="label"><b>Type de route:</b></td>';
-	text += '<td>' + road + '</td>';
-	text += '</tr><tr>';
-
-	// remplace le texte dans l'infobox
-	$('.infobox').html(text);
-
-	// animation de l'infobox pour les 3 premieres regions selectionnees
-	if (animation_count < 3) {
-		for (let i = 0; i < 3; i++) {
-			$('.infobox').fadeOut(250).fadeIn(250);
-		}
-		animation_count += 1;
-	}
-}
-
-function draw_chart() {
+/*
+	graphique
+*/
+function draw_chart(filtered_accidents) {
 
 	// compte accidents
-	accident_count = count_accidents(filter_accidents(accidents));
-	cumulative_accidents = accumulate_accidents(accident_count);
+	cumulative_accidents = accumulate_accidents(count_accidents(filtered_accidents));
 
 	cumulative_accidents.forEach(d => {
 		d.date = new Date(d.year, d.month - 1);
@@ -385,10 +344,14 @@ function draw_chart() {
 				.html(`Mois: ${d3.timeFormat("%b %Y")(d.date)}<br>Accidents cumulés: ${d.cumulativeCount}`)
 				.style("left", `${event.pageX + 10}px`)
 				.style("top", `${event.pageY - 30}px`);
+
+			d3.select(this).attr("fill", "#3eb8ae");
 		})
 		.on("mouseout", function () {
 			// Masquer le tooltip
 			tooltip.style("display", "none");
+
+			d3.select(this).attr("fill", "transparent");
 		});
 
 	// Ajouter un tooltip
@@ -430,4 +393,52 @@ function draw_chart() {
 		.attr("text-anchor", "middle")
 		.style("font-size", "14px")
 		.text("Accidents par mois");
+}
+
+/*
+	infobox
+*/
+// change le texte dans l'infobox en fonction de l'accident sélectionné
+function display_accident_data(accident) {
+
+	month = accident.AccidentMonth_fr.charAt(0).toUpperCase() + accident.AccidentMonth_fr.slice(1);
+	year = accident.AccidentYear
+	weekday = accident.AccidentWeekDay_fr.charAt(0).toUpperCase() + accident.AccidentWeekDay_fr.slice(1);
+	hour = Math.floor(accident.AccidentHour) + 'h';
+	type = accident.AccidentType_fr.charAt(0).toUpperCase() + accident.AccidentType_fr.slice(1);
+	severity = accident.AccidentSeverityCategory_fr.charAt(0).toUpperCase() + accident.AccidentSeverityCategory_fr.slice(1);
+	road = accident.RoadType_fr.charAt(0).toUpperCase() + accident.RoadType_fr.slice(1);
+
+	// cree le contenu de l'infobox a partir des donnees
+	var text = '<table class="infotable">';
+	text += '<tr>';
+	text += '<td class="label"><b>Mois et année:</b></td>';
+	text += '<td>' + month + ' ' + year + '</td>';
+	text += '</tr><tr>';
+	text += '<td class="label"><b>Jour:</b></td>';
+	text += '<td>' + weekday + '</td>';
+	text += '</tr><tr>';
+	text += '<td class="label"><b>Heure:</b></td>';
+	text += '<td>' + hour + '</td>';
+	text += '</tr><tr>';
+	text += '<td class="label"><b>Type d\'accident:</b></td>';
+	text += '<td>' + type + '</td>';
+	text += '</tr><tr>';
+	text += '<td class="label"><b>Sévérité:</b></td>';
+	text += '<td>' + severity + '</td>';
+	text += '</tr><tr>';
+	text += '<td class="label"><b>Type de route:</b></td>';
+	text += '<td>' + road + '</td>';
+	text += '</tr><tr>';
+
+	// remplace le texte dans l'infobox
+	$('.infobox').html(text);
+
+	// animation de l'infobox pour les 3 premieres regions selectionnees
+	if (animation_count < 3) {
+		for (let i = 0; i < 3; i++) {
+			$('.infobox').fadeOut(250).fadeIn(250);
+		}
+		animation_count += 1;
+	}
 }
