@@ -300,7 +300,7 @@ function draw_chart(filtered_accidents) {
 		.attr("y", d => yScale_count(d.count))
 		.attr("width", xScale.bandwidth())
 		.attr("height", d => innerHeight - yScale_count(d.count))
-		.attr("fill", "steelblue")
+		.attr("fill", "LightSteelBlue")
 		.attr("opacity", 0.6)
 		.on("mouseover", function (event, d) {
 			tooltip.style("display", "block")
@@ -350,7 +350,6 @@ function draw_chart(filtered_accidents) {
 			d3.select(this).attr("fill", "#3eb8ae");
 		})
 		.on("mouseout", function () {
-			// Masquer le tooltip
 			tooltip.style("display", "none");
 
 			d3.select(this).attr("fill", "transparent");
