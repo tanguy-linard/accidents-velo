@@ -84,7 +84,7 @@ function showTab(tabId) {
 L’utilisateur peut filtrer les accidents affichés selon plusieurs critères : l’année, la gravité des blessures, le type de route et le type d’accident. 
 
 #### Sélection de l'année
-Pour choisir une période, un curseur interactif est créé avec [*noUiSlider*](https://github.com/leongersen/noUiSlider):
+Pour choisir une période, un curseur interactif est créé avec [*noUiSlider*](https://github.com/leongersen/noUiSlider) :
 
 ```js
 // dates slider
@@ -111,7 +111,7 @@ noUiSlider.create(dateSlider, {
 
 #### Sélection des autres critères
 
-Pour les autres filtres, l'utilisateur peut chosir les accidents à afficher grâce à des checkbox. Exemple pour la sévérité de l'accident:
+Pour les autres filtres, l'utilisateur peut chosir les accidents à afficher grâce à des checkbox. Exemple pour la sévérité de l'accident :
 
 ```html
 <!-- checkbox pour choisir la severité de l'accident -->
@@ -154,7 +154,7 @@ function update_charts() {
 }
 ```
 
-La fonction `filter_accidents` sélectionne les accidents en fonction des filtres définis en regardant l'état des checkboxs:
+La fonction `filter_accidents` sélectionne les accidents en fonction des filtres définis en regardant l'état des checkboxs :
 
 ```js
 function filter_accidents() {
@@ -176,7 +176,7 @@ function filter_accidents() {
 Les fonctions `update_clusters` et `draw_chart` mettent à jour respectivement la  [carte](#carte) et le [graphique](#graphique).
 
 ### Carte
-La carte est crée à l'aide de [Leaflet](https://leafletjs.com/). Un fond de carte de ArcGIS est ajouté :
+La carte est générée à l'aide de [Leaflet](https://leafletjs.com/). Un fond de carte de ArcGIS est ajouté :
 
 ```js
 // fond de carte
@@ -186,7 +186,7 @@ var background_map = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/se
 });
 background_map.addTo(mymap);
 ```
-Ensuite la fonction `update_clusters`permet d'ajouter et mettre à jour les clusters. Dans cette fonction chaque points est ajouter à `markers = L.markerClusterGroup({})` avec:
+Ensuite la fonction `update_clusters` permet d'ajouter et mettre à jour les clusters. Dans cette fonction, chaque point est ajouté à `markers = L.markerClusterGroup({})` à l'aide de :
 
 ```js
 // ajoute les points au cluster
@@ -217,9 +217,9 @@ for (var i = 0; i < filtered_accidents.length; i++) {
 }
 ```
 
-`marker.blinTooltip` ajoute un tooltip donnant la sévériuté de l'accident lorsque l'utilsiateur passe la souris dessus.
+La méthode `marker.blinTooltip` ajoute un infobulle affichant la gravité de l’accident lorsque l’utilisateur passe la souris dessus.
 
-`marker.on('click')` permet d'afficher les détails de l'accident sélectionné grâce àal fonction `display_accident_data`.
+Enfin, `marker.on('click')`  permet d’afficher les détails de l’accident sélectionné en appelant la fonction `display_accident_data`.
 
 ### Graphique
 
