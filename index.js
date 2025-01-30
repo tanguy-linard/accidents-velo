@@ -178,6 +178,7 @@ function draw_map() {
 	});
 	background_map.addTo(mymap);
 
+	// ajoute les points au cluster
 	update_clusters(accidents);
 
 	// ajoute le cluster à la carte
@@ -194,10 +195,10 @@ function update_clusters(filtered_accidents) {
 		var lat = filtered_accidents[i].AccidentLocation_WGS84_N;
 		var lng = filtered_accidents[i].AccidentLocation_WGS84_E;
 		var marker = L.circleMarker([lat, lng], {
-			radius: 5, // Taille du cercle
-			color: '#3eb8ae', // Couleur du bord
-			fillColor: '#3eb8ae', // Couleur de remplissage
-			fillOpacity: 0.8 // Opacité du remplissage
+			radius: 5,
+			color: '#3eb8ae',
+			fillColor: '#3eb8ae',
+			fillOpacity: 0.8
 		});
 
 		// donnees de l'accident

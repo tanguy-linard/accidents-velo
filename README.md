@@ -176,6 +176,50 @@ function filter_accidents() {
 Les fonctions `update_clusters` et `draw_chart` mettent à jour respectivement la  [carte](#carte) et le [graphique](#graphique).
 
 ### Carte
+La carte est crée à l'aide de [Leaflet](https://leafletjs.com/). Un fond de carte de ArcGIS est ajouté :
+
+```js
+// fond de carte
+var background_map = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
+	maxZoom: 16
+});
+background_map.addTo(mymap);
+```
+Ensuite la fonction `update_clusters`permet d'ajouter et mettre à jour les clusters. Dans cette fonction chaque points est ajouter à `markers = L.markerClusterGroup({})` avec:
+
+```js
+// ajoute les points au cluster
+for (var i = 0; i < filtered_accidents.length; i++) {
+	var lat = filtered_accidents[i].AccidentLocation_WGS84_N;
+	var lng = filtered_accidents[i].AccidentLocation_WGS84_E;
+	var marker = L.circleMarker([lat, lng], {
+		radius: 5,
+		color: '#3eb8ae',
+		fillColor: '#3eb8ae',
+		fillOpacity: 0.8
+	});
+
+    // donnees de l'accident
+	marker.accident_data = filtered_accidents[i];
+
+	// tooltip
+	marker.bindTooltip(
+		filtered_accidents[i].AccidentSeverityCategory_fr.charAt(0).toUpperCase() + filtered_accidents[i].AccidentSeverityCategory_fr.slice(1)
+	);
+
+	// gestionnaire d'événement pour le clic
+	marker.on('click', function () {
+		display_accident_data(this.accident_data);
+	});
+
+	markers.addLayer(marker);
+}
+```
+
+`marker.blinTooltip` ajoute un tooltip donnant la sévériuté de l'accident lorsque l'utilsiateur passe la souris dessus.
+
+`marker.on('click')` permet d'afficher les détails de l'accident sélectionné grâce àal fonction `display_accident_data`.
 
 ### Graphique
 
