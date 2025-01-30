@@ -1,7 +1,18 @@
 # Carte Interactive des Accidents à Vélo en Suisse
 ## Objectif
+L'objectid de ceporjet est créer une visualisatiin interactive des accidents à vélo en Suisse entre 2011 et 2023.
 
 ## Public cible
+
+Le projet s'adresse à différents acteurs impliqués dans la gestion et la prévention des risques liés aux accidents et aux événements de pluies extrêmes.
+
+- **Décideur.eurses politiques** : Les élus et responsables politiques qui prennent des décisions en matière de sécurité publique et d'aménagement du territoire.
+  
+- **Services de prévention** : Les organisations et institutions dédiées à la prévention des accidents afin d'optimiser leurs interventions et leurs politiques de prévention.
+  
+- **Chercheur.euses** : Les chercheurs dans le domaine de la géographie, de l'environnement et des sciences sociales afin d'aider dans créeation de leurs modèles et l'analyse.
+  
+- **Urbanistes** : Les professionnels en charge de l'aménagement urbain, qui peuvent utilisé la visualisation afin créer des infrastructures et des espaces publics adaptés aux risques d'accidents.
 
 ## Technologies Utilisées
 
