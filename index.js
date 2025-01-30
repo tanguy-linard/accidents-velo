@@ -73,6 +73,7 @@ document.querySelectorAll('input[name="checkboxType"]').forEach(function (checkb
 	});
 });
 
+// onglets
 function showTab(tabId) {
 	// Masquer tous les contenus
 	document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
@@ -83,6 +84,7 @@ function showTab(tabId) {
 	document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
 }
 
+// mettre à jour les graphiques
 function update_charts() {
 	filtered_accidents = filter_accidents(accidents);
 	update_clusters(filtered_accidents);
@@ -108,26 +110,25 @@ function filter_accidents() {
 }
 
 function count_accidents(filtered_accidents) {
-	// Crée un dictionnaire pour compter les accidents par mois et année
+	// crée un dictionnaire pour compter les accidents par mois et année
 	let monthly_accidents = {};
 
 	filtered_accidents.forEach(d => {
 		let year = d.AccidentYear;
-		let month = d.AccidentMonth; // Assure-toi que la colonne est bien `AccidentMonth`
+		let month = d.AccidentMonth;
 
-		// Utilise une clé pour combiner l'année et le mois
+		// utilise une clé pour combiner l'année et le mois
 		let key = `${year}-${month}`;
 
-		// Si cette clé n'existe pas, crée-la et initialise avec 0
 		if (!monthly_accidents[key]) {
 			monthly_accidents[key] = 0;
 		}
 
-		// Incrémente le nombre d'accidents pour ce mois
+		// incrémente le nombre d'accidents pour ce mois
 		monthly_accidents[key]++;
 	});
 
-	// Transforme l'objet en tableau avec `year-month` comme clé et `count` comme valeur
+	// transforme l'objet en tableau avec `year-month` comme clé et `count` comme valeur
 	let accident_count = [];
 	for (let key in monthly_accidents) {
 		let [year, month] = key.split("-");
@@ -138,7 +139,7 @@ function count_accidents(filtered_accidents) {
 		});
 	}
 
-	// Trie par date (année, puis mois)
+	// trie par date
 	accident_count.sort((a, b) => new Date(a.year, a.month - 1) - new Date(b.year, b.month - 1));
 
 	return accident_count;
@@ -148,12 +149,12 @@ function accumulate_accidents(accident_count) {
 	let cumulative_accidents = [];
 	let cumulative_count = 0;
 
-	// Cumul des accidents
+	// cumul des accidents
 	accident_count.forEach(d => {
-		cumulative_count += d.count; // Ajoute le nombre d'accidents du mois courant
+		cumulative_count += d.count;
 		cumulative_accidents.push({
 			...d,
-			cumulativeCount: cumulative_count // Ajoute le total cumulé
+			cumulativeCount: cumulative_count
 		});
 	});
 
@@ -434,7 +435,7 @@ function display_accident_data(accident) {
 	// remplace le texte dans l'infobox
 	$('.infobox').html(text);
 
-	// animation de l'infobox pour les 3 premieres regions selectionnees
+	// animation de l'infobox pour les 3 premiers accidents selectionnees
 	if (animation_count < 3) {
 		for (let i = 0; i < 3; i++) {
 			$('.infobox').fadeOut(250).fadeIn(250);

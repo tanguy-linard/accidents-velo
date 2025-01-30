@@ -17,22 +17,11 @@ table {
     font-size: 10pt;
 }
 
-/* #map {
-    position: absolute;
-    top: 80px;
-    left: 375px;
-    background-color: #eee;
-    border: 1px solid #666;
-    height: calc(100vh - 100px);
-    width: calc(100vw - 395px);
-} */
-
 .tabs {
     display: flex;
     position: absolute;
     top: 43px;
     left: calc(100vw - 197px);
-    ;
 }
 
 .tab-button {
@@ -95,7 +84,6 @@ table {
 .cluster-count {
     color: black;
     line-height: 40px;
-    /* Centrer verticalement le texte */
     align-items: center;
 }
 
