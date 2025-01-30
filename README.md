@@ -226,7 +226,7 @@ Le graphique est généré à l'aide de [D3.js](https://d3js.org/). Tout d'abord
 
 
 #### Conteneur SVG
-Il faut ensuite créer des un conteneur et groupe svg où dessiner le graphique :
+Il faut ensuite créer un conteneur et un groupe svg où dessiner le graphique :
 ```js
 // svg container et vide le contenu
 d3.select("#chart-container").selectAll("*").remove();
