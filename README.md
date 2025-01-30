@@ -42,7 +42,7 @@ df[['AccidentLocation_WGS84_E', 'AccidentLocation_WGS84_N']] = df.apply(lambda r
 
 ## Fonctionnement
 ### Onglets
-L'afficahge de la carte et du graphique se font sur deux onglets différentes de la page. Le changement entre la carte et le grahe se fait à l'ade de boutons :
+L’affichage de la carte et du graphique se fait dans deux onglets distincts sur la page. Le changement entre la carte et le graphique se fait à l’aide de boutons :
 
 ```html
 <!-- Tabs -->
@@ -52,7 +52,7 @@ L'afficahge de la carte et du graphique se font sur deux onglets différentes de
 </div>
 ```
 
-et les deux visualisations sont dans un div `tab-content`, qui peut être `active` ou non:
+Les deux visualisations (carte et graphique) sont placées dans un conteneur `<div>` appelé `tab-content`, auquel est attribuée la classe `active` pour déterminer quelle vue est actuellement affichée :
 
 ```html
 <!-- Conteneur pour la carte et le graphique -->
@@ -66,7 +66,7 @@ et les deux visualisations sont dans un div `tab-content`, qui peut être `activ
         </div>
     </div>
 ```
-Lorsque l'utilisateur appuie sur un bouton, un fonction désactive tous les onglets et ensuite active l'onglet sélectionné:
+Lorsque l'utilisateur clique sur un bouton, une fonction JavaScript désactive tous les onglets et active l’onglet sélectionné :
 
 ```js
 function showTab(tabId) {
@@ -80,8 +80,100 @@ function showTab(tabId) {
 }
 ```
 
+### Choix des données à afficher
+L’utilisateur peut filtrer les accidents affichés selon plusieurs critères : l’année, la gravité des blessures, le type de route et le type d’accident. 
 
-### Choic des données à afficher
+#### Sélection de l'année
+Pour choisir une période, un curseur interactif est créé avec [*noUiSlider*](https://github.com/leongersen/noUiSlider):
+
+```js
+// dates slider
+const dateSlider = document.getElementById('date-range-slider');
+
+noUiSlider.create(dateSlider, {
+	start: date_range,
+	connect: true,
+	range: {
+		min: date_range[0],
+		max: date_range[1]
+	},
+	tooltips: {
+		to: function (value) {
+			return Math.round(value);
+		},
+		from: function (value) {
+			return value;
+		}
+	},
+	step: 1
+});
+```
+
+#### Sélection des autres critères
+
+Pour les autres filtres, l'utilisateur peut chosir les accidents à afficher grâce à des checkbox. Exemple pour la sévérité de l'accident:
+
+```html
+<!-- checkbox pour choisir la severité de l'accident -->
+<div class="checkboxSeverity" style="border-top: 1px solid #c0c0c0; margin-top: 10px;">
+    <h2>Sévérité de l'accident</h2>
+    <input id="as3" type="checkbox" name="checkboxSeverity" value="as3" checked />
+    <label for="leger">Léger</label>
+
+    <input id="as2" type="checkbox" name="checkboxSeverity" value="as2" checked />
+    <label for="grave">Grave</label>
+
+    <input id="as1" type="checkbox" name="checkboxSeverity" value="as1" checked />
+    <label for="deces">Décès</label>
+</div>
+```
+
+#### Mise à jour des visualisations
+
+Lorsque l’utilisateur modifie un filtre (curseur ou case à cocher), un événement est déclenché pour mettre à jour les graphiques. Exemple pour le slider et les checkbox de la sévérité de l'accident :
+```js
+// dates
+dateSlider.noUiSlider.on('change', function () {
+	update_charts();
+});
+
+// sévérité
+document.querySelectorAll('input[name="checkboxSeverity"]').forEach(function (checkbox) {
+	checkbox.addEventListener('change', function () {
+		update_charts();
+	});
+});
+```
+La fonction `update_charts` applique les filtres et met à jour les visualisations :
+
+```js
+function update_charts() {
+	filtered_accidents = filter_accidents(accidents);
+	update_clusters(filtered_accidents);
+	draw_chart(filtered_accidents);
+}
+```
+
+La fonction `filter_accidents` sélectionne les accidents en fonction des filtres définis en regardant l'état des checkboxs:
+
+```js
+function filter_accidents() {
+	dates = dateSlider.noUiSlider.get().map(Number);
+
+	severities = Array.from(document.querySelectorAll('.checkboxSeverity input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+
+	roads = Array.from(document.querySelectorAll('.checkboxRoad input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+
+	types = Array.from(document.querySelectorAll('.checkboxType input[type="checkbox"]:checked')).map(checkbox => checkbox.value);
+
+	filtered_accidents = accidents.filter(function (d) {
+		return d.AccidentYear >= dates[0] && d.AccidentYear <= dates[1] && severities.includes(d.AccidentSeverityCategory) && roads.includes(d.RoadType) && types.includes(d.AccidentType);
+	});
+	return filtered_accidents
+}
+```
+
+Les fonctions `update_clusters` et `draw_chart` mettent à jour respectivement la  [carte](#carte) et le [graphique](#graphique).
 
 ### Carte
 
