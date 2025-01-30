@@ -243,7 +243,7 @@ function draw_chart(filtered_accidents) {
 	const innerWidth = width - margin.left - margin.right;
 	const innerHeight = height - margin.top - margin.bottom;
 
-	// svf container et vide le contenu
+	// svg container et vide le contenu
 	d3.select("#chart-container").selectAll("*").remove();
 	const container = d3.select("#chart-container")
 		.append("svg")
@@ -254,9 +254,9 @@ function draw_chart(filtered_accidents) {
 	const chart = container.append("g")
 		.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-	// Échelles
+	// echelles
 	const xScale = d3.scaleBand()
-		.domain(cumulative_accidents.map(d => d.date)) // Liste des dates comme catégories
+		.domain(cumulative_accidents.map(d => d.date))
 		.range([0, innerWidth])
 		.padding(0.1);
 
@@ -270,7 +270,7 @@ function draw_chart(filtered_accidents) {
 		.nice()
 		.range([innerHeight, 0]);
 
-	// Axe x
+	// axe x
 	const xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%b %Y"))
 		.tickValues(xScale.domain().filter((d, i) => i % 6 === 0));
 
@@ -281,11 +281,11 @@ function draw_chart(filtered_accidents) {
 		.attr("transform", "rotate(-45)")
 		.style("text-anchor", "end");
 
-	// Axe Y (Nombre d'accidents)
+	// axes y
 	const yAxis_cumulative = d3.axisLeft(yScale_cumulative);
 	chart.append("g").call(yAxis_cumulative);
 
-	const yAxis_count = d3.axisRight(yScale_count).ticks(5); // Second axe pour les barres
+	const yAxis_count = d3.axisRight(yScale_count).ticks(5);
 	chart.append("g")
 		.attr("transform", `translate(${innerWidth}, 0)`)
 		.call(yAxis_count);
@@ -316,13 +316,13 @@ function draw_chart(filtered_accidents) {
 			d3.select(this).attr("opacity", 0.6);
 		});
 
-	// Créer la ligne
+	// créer la ligne
 	const line = d3.line()
 		.x(d => xScale(d.date))
 		.y(d => yScale_cumulative(d.cumulativeCount))
-		.curve(d3.curveMonotoneX); // Courbe plus fluide
+		.curve(d3.curveMonotoneX);
 
-	// Ajouter la ligne au graphique
+	// ajouter la ligne au graphique
 	chart.append("path")
 		.datum(cumulative_accidents)
 		.attr("fill", "none")
@@ -330,7 +330,7 @@ function draw_chart(filtered_accidents) {
 		.attr("stroke-width", 5)
 		.attr("d", line);
 
-	// Ajouter des cercles sur chaque point de la ligne pour interagir avec le tooltip
+	// ajouter des cercles sur chaque point de la ligne pour le tooltip
 	chart.selectAll(".dot")
 		.data(cumulative_accidents)
 		.enter()
@@ -355,7 +355,7 @@ function draw_chart(filtered_accidents) {
 			d3.select(this).attr("fill", "transparent");
 		});
 
-	// Ajouter un tooltip
+	// tooltip
 	const tooltip = d3.select("body")
 		.append("div")
 		.style("position", "absolute")
@@ -366,30 +366,30 @@ function draw_chart(filtered_accidents) {
 		.style("display", "none")
 		.style("font-size", "12px");
 
-	// Titre de l'axe X
+	// titre de l'axe X
 	chart.append("text")
 		.attr("class", "x-axis-title")
 		.attr("x", innerWidth / 2)
-		.attr("y", innerHeight + margin.bottom - 10) // Position sous l'axe X
+		.attr("y", innerHeight + margin.bottom - 10)
 		.attr("text-anchor", "middle")
 		.style("font-size", "14px")
 		.text("Mois");
 
-	// Titre de l'axe Y (nombre d'accidents cumulés)
+	// titre de l'axe Y (nombre d'accidents cumulés)
 	chart.append("text")
 		.attr("class", "y-axis-title")
 		.attr("x", -innerHeight / 2)
-		.attr("y", -margin.left + 20) // Position à gauche
-		.attr("transform", "rotate(-90)") // Rotation verticale
+		.attr("y", -margin.left + 20)
+		.attr("transform", "rotate(-90)")
 		.attr("text-anchor", "middle")
 		.style("font-size", "14px")
 		.text("Accidents Cumulés");
 
-	// Titre de l'axe Y droit (nombre d'accidents mensuels, pour les barres)
+	// titre de l'axe Y droit (nombre d'accidents mensuels)
 	chart.append("text")
 		.attr("class", "y-axis-title")
 		.attr("x", -innerHeight / 2)
-		.attr("y", innerWidth + margin.right - 20) // Position à droite
+		.attr("y", innerWidth + margin.right - 20)
 		.attr("transform", "rotate(-90)")
 		.attr("text-anchor", "middle")
 		.style("font-size", "14px")
