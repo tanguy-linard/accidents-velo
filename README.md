@@ -1,6 +1,6 @@
 # Carte Interactive des Accidents à Vélo en Suisse
 ## Objectif
-L'objectid de ceporjet est créer une visualisatiin interactive des accidents à vélo en Suisse entre 2011 et 2023.
+L'objectif de ce projet est de créer une visualisatiin interactive des accidents à vélo en Suisse entre 2011 et 2023.
 
 ## Public cible
 
@@ -16,9 +16,29 @@ Le projet s'adresse à différents acteurs impliqués dans la gestion et la pré
 
 ## Technologies Utilisées
 
+- **Python (pandas, pyroj)**: Prtraitrement des données
 - **HTML/CSS/JavaScript**: Base pour le développement web
 - **Leaflet**: Bibliothèque JavaScript pour la carte interactive
 - **D3.js**: Bibliothèque JavaScript pour créer les graphes
+
+## Prétraitement
+### Filtrage des accidents
+Les données sur les accidents comprends tous les accidents routiers avec dommage corporels. Il faut donc filter les accidents afin de seulement garder les accidents qui incluent un vélo. Avec [*pandas*](https://pandas.pydata.org/), ccette opération peut être réalisée facilement avec un script Python :
+
+```python
+df_bike = df[df['AccidentInvolvingBicycle'] == True]
+```
+
+### Changement de CRS
+Le CRS utislié dans les données est LV95. Afin de faciliter l'ulitsaition des donnnées dans Leaflet, il faut convertir les coordnonnées en WGS84. Le module `Transformer` de [*pyproj*](https://pyproj4.github.io/pyproj/stable/) permet de réaliser cette conversion facilement :
+
+```python
+# création du transformer
+transformer = Transformer.from_crs(input_crs, output_crs, always_xy=True)
+
+# changement de la projection
+df[['AccidentLocation_WGS84_E', 'AccidentLocation_WGS84_N']] = df.apply(lambda row: transformer.transform(row['AccidentLocation_CHLV95_E'], row['AccidentLocation_CHLV95_N']), axis=1, result_type='expand'
+```
 
 ## Fonctionnement
 
