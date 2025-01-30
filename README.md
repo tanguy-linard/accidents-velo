@@ -23,7 +23,7 @@ Le projet s'adresse à différents acteurs impliqués dans la gestion et la pré
 
 ## Prétraitement
 ### Filtrage des accidents
-Les données sur les accidents comprends tous les accidents routiers avec dommage corporels. Il faut donc filter les accidents afin de seulement garder les accidents qui incluent un vélo. Avec [*pandas*](https://pandas.pydata.org/), cette opération peut être réalisée facilement avec un script Python :
+Les données sur les accidents comprends tous les accidents routiers avec dommage corporels. Il faut donc filtrer les accidents afin de seulement garder les accidents qui incluent un vélo. Avec [*pandas*](https://pandas.pydata.org/), cette opération peut être réalisée facilement avec un script Python :
 
 ```python
 df_bike = df[df['AccidentInvolvingBicycle'] == True]
@@ -111,7 +111,7 @@ noUiSlider.create(dateSlider, {
 
 #### Sélection des autres critères
 
-Pour les autres filtres, l'utilisateur peut choisir les accidents à afficher grâce à des checkbox. Exemple pour la sévérité de l'accident :
+Pour les autres filtres, l'utilisateur peut choisir les accidents à afficher grâce à des checkboxs. Exemple pour la sévérité de l'accident :
 
 ```html
 <!-- checkbox pour choisir la severité de l'accident -->
