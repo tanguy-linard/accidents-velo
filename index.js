@@ -283,6 +283,9 @@ function draw_chart() {
 		d.date = new Date(d.year, d.month - 1);
 	});
 
+	const minDate = d3.min(cumulative_accidents, d => d.date);
+	const maxDate = d3.max(cumulative_accidents, d => d.date);
+
 	// dimensions
 	const dim_container = d3.select(".tab-content")
 	const margin = { top: 50, right: 50, bottom: 50, left: 70 };
@@ -303,9 +306,10 @@ function draw_chart() {
 		.attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 	// Échelles
-	const xScale = d3.scaleTime()
-		.domain(d3.extent(cumulative_accidents, d => d.date))
-		.range([0, innerWidth]);
+	const xScale = d3.scaleBand()
+		.domain(cumulative_accidents.map(d => d.date)) // Liste des dates comme catégories
+		.range([0, innerWidth])
+		.padding(0.1);
 
 	const yScale_cumulative = d3.scaleLinear()
 		.domain([0, d3.max(cumulative_accidents, d => d.cumulativeCount)])
@@ -318,7 +322,9 @@ function draw_chart() {
 		.range([innerHeight, 0]);
 
 	// Axe x
-	const xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%b %Y"));
+	const xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%b %Y"))
+		.tickValues(xScale.domain().filter((d, i) => i % 6 === 0));
+
 	chart.append("g")
 		.attr("transform", `translate(0, ${innerHeight})`)
 		.call(xAxis)
@@ -336,7 +342,6 @@ function draw_chart() {
 		.call(yAxis_count);
 
 	// crée les bars
-	const barWidth = innerWidth / accident_count.length;
 	chart.selectAll(".bar")
 		.data(cumulative_accidents)
 		.enter()
@@ -344,16 +349,29 @@ function draw_chart() {
 		.attr("class", "bar")
 		.attr("x", d => xScale(d.date))
 		.attr("y", d => yScale_count(d.count))
-		.attr("width", barWidth)
+		.attr("width", xScale.bandwidth())
 		.attr("height", d => innerHeight - yScale_count(d.count))
 		.attr("fill", "steelblue")
-		.attr("opacity", 0.6);
+		.attr("opacity", 0.6)
+		.on("mouseover", function (event, d) {
+			tooltip.style("display", "block")
+				.html(`Mois: ${d3.timeFormat("%b %Y")(d.date)}<br>Accidents: ${d.count}`)
+				.style("left", `${event.pageX + 10}px`)
+				.style("top", `${event.pageY - 30}px`);
+
+			d3.select(this).attr("opacity", 1);
+		})
+		.on("mouseout", function () {
+			tooltip.style("display", "none");
+
+			d3.select(this).attr("opacity", 0.6);
+		});
 
 	// Créer la ligne
 	const line = d3.line()
 		.x(d => xScale(d.date))
-		.y(d => yScale_cumulative(d.cumulativeCount));
-	//.curve(d3.curveMonotoneX); // Courbe plus fluide
+		.y(d => yScale_cumulative(d.cumulativeCount))
+		.curve(d3.curveMonotoneX); // Courbe plus fluide
 
 	// Ajouter la ligne au graphique
 	chart.append("path")
