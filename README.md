@@ -1,18 +1,36 @@
 # Carte Interactive des Accidents à Vélo en Suisse
+## Objectif
 
-Ce projet vise à créer une carte interactive web pour visualiser les ayant le plus d'accidents à vélo en Suisse. À l'aide des coordonnées GPS des accidents, l'objectif est d'associer chaque accident à une route afin de faire ressortir les routes les plus accidentogènes pour les vélos.
-
-La carte sera accompagnée de graphiques pour une meilleure compréhension des données.
+## Public cible
 
 ## Technologies Utilisées
 
 - **HTML/CSS/JavaScript**: Base pour le développement web
-- **Leaflet**: Bibliothèque JavaScript pour carte interactive
+- **Leaflet**: Bibliothèque JavaScript pour la carte interactive
 - **D3.js**: Bibliothèque JavaScript pour créer les graphes
+
+## Fonctionnement
+
+## Utilisation
+### Windows
+1. Téléchargez le fichier ZIP et décompressez-le dans un dossier de votre choix.
+2. Ouvrez l'invite de commandes et naviguez jusqu'au dossier extrait : `cd C:\Users\VotreNomUtilisateur\DossierDeVotreChoix\NomDuDossier`
+3. Démarrez un serveur local avec Python : `python -m http.server`
+4. Ouvrez votre navigateur web et allez à l'adresse : `http://0.0.0.0:8000/`
+
+### MacOS
+1. Téléchargez le fichier ZIP et extrayez-le dans un dossier de votre choix.
+2. Ouvrez le Terminal et naviguez jusqu'au dossier extrait : `cd /Users/VotreNomUtilisateur/DossierDeVotreChoix/NomDuDossier`
+3. Lancez un serveur local avec Python : `python3 -m http.server`
+4. Ouvrez votre navigateur web et allez à l'adresse : `http://0.0.0.0:8000/`
+
+Il peut aussi être visualisé [ici](https://tanguy-linard.github.io/accidents-velo)
 
 ## Sources des Données
 
-- **Accidents à Vélo**: Fournies par l'Administration Fédérale des Routes ASTRA sur [data.geo.admin.ch](https://data.geo.admin.ch/ch.astra.unfaelle-personenschaeden_alle/).
-- **Routes**: Obtenues à partir du Modèle du Territoire Suisse SwissTLM3D de swisstopo. Disponible sur [www.swisstopo.admin.ch](https://www.swisstopo.admin.ch/fr/modele-du-territoire-swisstlm3d).
+**Accidents à Vélo**: Fournies par l'Office fédéral des routes OFROU sur [data.geo.admin.ch](https://data.geo.admin.ch/ch.astra.unfaelle-personenschaeden_alle/).
 
- Les données peuvent être visualisées sur cette [carte](https://map.geo.admin.ch/?lang=fr&topic=ech&bgLayer=voidLayer&layers=ch.astra.unfaelle-personenschaeden_fahrraeder,ch.swisstopo.swisstlm3d-strassen&layers_timestamp=99990101,&E=2642293.13&N=1176766.04&zoom=1.4787541594998965).
+ Les données peuvent être visualisées sur cette [carte](https://map.geo.admin.ch/#/map?lang=fr&center=2625230.81,1201143.54&z=1.765&topic=ech&layers=ch.astra.unfaelle-personenschaeden_fahrraeder@year=all&bgLayer=ch.swisstopo.pixelkarte-farbe).
+
+## Auteur
+Tanguy Linard, 2025
