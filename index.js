@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", async function (event) {
 	draw_map();
 
 	// dessine le graphique
-	draw_linechart()
+	draw_chart()
 });
 
 // dates
@@ -164,7 +164,7 @@ function showTab(tabId) {
 
 function update_charts() {
 	update_clusters();
-	draw_linechart();
+	draw_chart();
 }
 
 /* 
@@ -205,8 +205,8 @@ function update_clusters() {
 		var lng = filtered_accidents[i].AccidentLocation_WGS84_E;
 		var marker = L.circleMarker([lat, lng], {
 			radius: 5, // Taille du cercle
-			color: '#00a6ff', // Couleur du bord
-			fillColor: '#00a6ff', // Couleur de remplissage
+			color: '#3eb8ae', // Couleur du bord
+			fillColor: '#3eb8ae', // Couleur de remplissage
 			fillOpacity: 0.8 // Opacité du remplissage
 		});
 
@@ -273,7 +273,7 @@ function display_accident_data(accident) {
 	}
 }
 
-function draw_linechart() {
+function draw_chart() {
 
 	// compte accidents
 	accident_count = count_accidents(filter_accidents(accidents));
@@ -307,8 +307,13 @@ function draw_linechart() {
 		.domain(d3.extent(cumulative_accidents, d => d.date))
 		.range([0, innerWidth]);
 
-	const yScale = d3.scaleLinear()
+	const yScale_cumulative = d3.scaleLinear()
 		.domain([0, d3.max(cumulative_accidents, d => d.cumulativeCount)])
+		.nice()
+		.range([innerHeight, 0]);
+
+	const yScale_count = d3.scaleLinear()
+		.domain([0, d3.max(cumulative_accidents, d => d.count)])
 		.nice()
 		.range([innerHeight, 0]);
 
@@ -322,13 +327,32 @@ function draw_linechart() {
 		.style("text-anchor", "end");
 
 	// Axe Y (Nombre d'accidents)
-	const yAxis = d3.axisLeft(yScale);
-	chart.append("g").call(yAxis);
+	const yAxis_cumulative = d3.axisLeft(yScale_cumulative);
+	chart.append("g").call(yAxis_cumulative);
+
+	const yAxis_count = d3.axisRight(yScale_count).ticks(5); // Second axe pour les barres
+	chart.append("g")
+		.attr("transform", `translate(${innerWidth}, 0)`)
+		.call(yAxis_count);
+
+	// crée les bars
+	const barWidth = innerWidth / accident_count.length;
+	chart.selectAll(".bar")
+		.data(cumulative_accidents)
+		.enter()
+		.append("rect")
+		.attr("class", "bar")
+		.attr("x", d => xScale(d.date))
+		.attr("y", d => yScale_count(d.count))
+		.attr("width", barWidth)
+		.attr("height", d => innerHeight - yScale_count(d.count))
+		.attr("fill", "steelblue")
+		.attr("opacity", 0.6);
 
 	// Créer la ligne
 	const line = d3.line()
 		.x(d => xScale(d.date))
-		.y(d => yScale(d.cumulativeCount));
+		.y(d => yScale_cumulative(d.cumulativeCount));
 	//.curve(d3.curveMonotoneX); // Courbe plus fluide
 
 	// Ajouter la ligne au graphique
@@ -346,7 +370,7 @@ function draw_linechart() {
 		.append("circle")
 		.attr("class", "dot")
 		.attr("cx", d => xScale(d.date))
-		.attr("cy", d => yScale(d.cumulativeCount))
+		.attr("cy", d => yScale_cumulative(d.cumulativeCount))
 		.attr("r", 5)
 		.attr("fill", "transparent")
 		.on("mouseover", function (event, d) {
