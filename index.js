@@ -341,7 +341,6 @@ function draw_chart(filtered_accidents) {
 		.attr("r", 5)
 		.attr("fill", "transparent")
 		.on("mouseover", function (event, d) {
-			// Afficher le tooltip
 			tooltip.style("display", "block")
 				.html(`Mois: ${d3.timeFormat("%b %Y")(d.date)}<br>Accidents cumulés: ${d.cumulativeCount}`)
 				.style("left", `${event.pageX + 10}px`)

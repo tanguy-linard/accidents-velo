@@ -222,6 +222,131 @@ La méthode `marker.blinTooltip` ajoute un infobulle affichant la gravité de l�
 Enfin, `marker.on('click')`  permet d’afficher les détails de l’accident sélectionné en appelant la fonction `display_accident_data`.
 
 ### Graphique
+Le graphique est généré à l'aide de [D3.js](https://d3js.org/). Tout d'abord le nombre et le nombre cumulé d'accidents pour chaque mois est calculé à l'aide des fonctions `count_accidents`et `accumulate_accidents`.
+
+
+#### Conteneur SVG
+Il faut ensuite créer des un conteneur et groupe svg où dessiner le graphique :
+```js
+// svg container et vide le contenu
+d3.select("#chart-container").selectAll("*").remove();
+const container = d3.select("#chart-container")
+	.append("svg")
+	.attr("width", width)
+	.attr("height", height);
+
+// groupe svg
+const chart = container.append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+```
+
+#### Echelles
+Anisi que définir les axes, comme on combine un line chart et un barplot, il faut définir 2 échelles pour l'axes y :
+```js
+// echelles
+const xScale = d3.scaleBand()
+	.domain(cumulative_accidents.map(d => d.date))
+	.range([0, innerWidth])
+	.padding(0.1);
+
+const yScale_cumulative = d3.scaleLinear()
+	.domain([0, d3.max(cumulative_accidents, d => d.cumulativeCount)])
+	.nice()
+	.range([innerHeight, 0]);
+
+const yScale_count = d3.scaleLinear()
+	.domain([0, d3.max(cumulative_accidents, d => d.count)])
+	.nice()
+	.range([innerHeight, 0]);
+
+// axe x
+const xAxis = d3.axisBottom(xScale).tickFormat(d3.timeFormat("%b %Y"))
+	.tickValues(xScale.domain().filter((d, i) => i % 6 === 0));
+
+// axes y
+const yAxis_cumulative = d3.axisLeft(yScale_cumulative);
+chart.append("g").call(yAxis_cumulative);
+
+const yAxis_count = d3.axisRight(yScale_count).ticks(5);
+chart.append("g")
+	.attr("transform", `translate(${innerWidth}, 0)`)
+	.call(yAxis_count);
+```
+#### Barplot
+Le barplot est crée en dessinnant des rectangles avec un hauteur correspondant au nombre d'accident :
+```js
+// crée les bars
+chart.selectAll(".bar")
+	.data(cumulative_accidents)
+	.enter()
+	.append("rect")
+	.attr("class", "bar")
+	.attr("x", d => xScale(d.date))
+	.attr("y", d => yScale_count(d.count))
+	.attr("width", xScale.bandwidth())
+	.attr("height", d => innerHeight - yScale_count(d.count))
+	.attr("fill", "LightSteelBlue")
+	.attr("opacity", 0.6)
+	.on("mouseover", function (event, d) {
+		tooltip.style("display", "block")
+			.html(`Mois: ${d3.timeFormat("%b %Y")(d.date)}<br>Accidents: ${d.count}`)
+			.style("left", `${event.pageX + 10}px`)
+			.style("top", `${event.pageY - 30}px`);
+
+		d3.select(this).attr("opacity", 1);
+	})
+	.on("mouseout", function () {
+		tooltip.style("display", "none");
+
+		d3.select(this).attr("opacity", 0.6);
+	});
+```
+`on("mouseover")` permet de détecter quand la souris passe sur le rectange, un tooltip est affiché et le rectange est mis en avant. Ensuite `on("mouseout")` permet de svaoir quand la souris sort du rectangle pour remettre le style initiale.
+
+#### Line chart
+La courbe est générée à partir des données à l’aide de `d3.line()` et tracée sur le graphique :
+
+```js
+// créer la ligne
+const line = d3.line()
+	.x(d => xScale(d.date))
+	.y(d => yScale_cumulative(d.cumulativeCount))
+	.curve(d3.curveMonotoneX);
+
+// ajouter la ligne au graphique
+chart.append("path")
+	.datum(cumulative_accidents)
+	.attr("fill", "none")
+	.attr("stroke", "#3eb8ae")
+	.attr("stroke-width", 5)
+	.attr("d", line);
+```
+
+Pour améliorer l’interaction, des points invisibles sont ajoutés sur la courbe. Ils permettent d’afficher un tooltip lorsque l’utilisateur survole un point :
+```js
+// ajouter des cercles sur chaque point de la ligne pour le tooltip
+chart.selectAll(".dot")
+	.data(cumulative_accidents)
+	.enter()
+	.append("circle")
+	.attr("class", "dot")
+	.attr("cx", d => xScale(d.date))
+	.attr("cy", d => yScale_cumulative(d.cumulativeCount))
+	.attr("r", 5)
+	.attr("fill", "transparent")
+	.on("mouseover", function (event, d) {
+		tooltip.style("display", "block")
+			.html(`Mois: ${d3.timeFormat("%b %Y")(d.date)}br>Accidents cumulés: ${d.cumulativeCount}`)
+			.style("left", `${event.pageX + 10}px`)
+			.style("top", `${event.pageY - 30}px`);
+			d3.select(this).attr("fill", "#3eb8ae");
+	})
+	.on("mouseout", function () {
+	    tooltip.style("display", "none");
+
+        d3.select(this).attr("fill", "transparent");
+	});
+```
 
 ## Utilisation
 ### Windows
