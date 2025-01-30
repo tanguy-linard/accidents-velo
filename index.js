@@ -197,8 +197,9 @@ function update_clusters(filtered_accidents) {
 		var marker = L.circleMarker([lat, lng], {
 			radius: 5,
 			color: '#3eb8ae',
+			opacity: 0.6,
 			fillColor: '#3eb8ae',
-			fillOpacity: 0.8
+			fillOpacity: 1
 		});
 
 		// donnees de l'accident
