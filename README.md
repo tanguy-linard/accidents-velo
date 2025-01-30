@@ -41,6 +41,51 @@ df[['AccidentLocation_WGS84_E', 'AccidentLocation_WGS84_N']] = df.apply(lambda r
 ```
 
 ## Fonctionnement
+### Onglets
+L'afficahge de la carte et du graphique se font sur deux onglets différentes de la page. Le changement entre la carte et le grahe se fait à l'ade de boutons :
+
+```html
+<!-- Tabs -->
+<div class="tabs">
+    <button class="tab-button active" onclick="showTab('map')">Carte</button>
+    <button class="tab-button" onclick="showTab('chart')">Graphique</button>
+</div>
+```
+
+et les deux visualisations sont dans un div `tab-content`, qui peut être `active` ou non:
+
+```html
+<!-- Conteneur pour la carte et le graphique -->
+    <div class="tab-content">
+        <div id="map" class="tab-pane active">
+            <div id="map-container"></div>
+        </div>
+
+        <div id="chart" class="tab-pane">
+            <div id="chart-container"></div>
+        </div>
+    </div>
+```
+Lorsque l'utilisateur appuie sur un bouton, un fonction désactive tous les onglets et ensuite active l'onglet sélectionné:
+
+```js
+function showTab(tabId) {
+    // Masquer tous les contenus
+    document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
+
+    // Afficher le bon onglet
+    document.getElementById(tabId).classList.add('active');
+    document.querySelector(`[onclick="showTab('${tabId}')"]`).classList.add('active');
+}
+```
+
+
+### Choic des données à afficher
+
+### Carte
+
+### Graphique
 
 ## Utilisation
 ### Windows
@@ -57,7 +102,7 @@ df[['AccidentLocation_WGS84_E', 'AccidentLocation_WGS84_N']] = df.apply(lambda r
 
 Il peut aussi être visualisé [ici](https://tanguy-linard.github.io/accidents-velo)
 
-## Sources des Données
+## Source des Données
 
 **Accidents à Vélo**: Fournies par l'Office fédéral des routes OFROU sur [data.geo.admin.ch](https://data.geo.admin.ch/ch.astra.unfaelle-personenschaeden_alle/).
 
