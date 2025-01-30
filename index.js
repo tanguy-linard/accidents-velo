@@ -6,19 +6,7 @@ const date_range = [2011, 2023];
 var animation_count = 0;
 
 // initialise le cluster des points	
-const markers = L.markerClusterGroup({
-	// iconCreateFunction: function (cluster) {
-	// 	var count = cluster.getChildCount();
-	// 	var k = 0.001; // taille du cluster
-	// 	var zoom = mymap.getZoom();
-
-	// 	return L.divIcon({
-	// 		html: `<div class="cluster-count">${count}</div>`,
-	// 		className: 'cluster-icon',
-	// 		iconSize: L.point(40, 40)
-	// 	});
-	// }
-});
+const markers = L.markerClusterGroup({});
 
 /*
 traitement données
@@ -288,7 +276,7 @@ function draw_chart() {
 
 	// dimensions
 	const dim_container = d3.select(".tab-content")
-	const margin = { top: 50, right: 50, bottom: 50, left: 70 };
+	const margin = { top: 40, right: 70, bottom: 70, left: 70 };
 	const width = parseInt(dim_container.style("width"));
 	const height = parseInt(dim_container.style("height"));
 	const innerWidth = width - margin.left - margin.right;
@@ -413,4 +401,33 @@ function draw_chart() {
 		.style("border-radius", "5px")
 		.style("display", "none")
 		.style("font-size", "12px");
+
+	// Titre de l'axe X
+	chart.append("text")
+		.attr("class", "x-axis-title")
+		.attr("x", innerWidth / 2)
+		.attr("y", innerHeight + margin.bottom - 10) // Position sous l'axe X
+		.attr("text-anchor", "middle")
+		.style("font-size", "14px")
+		.text("Mois");
+
+	// Titre de l'axe Y (nombre d'accidents cumulés)
+	chart.append("text")
+		.attr("class", "y-axis-title")
+		.attr("x", -innerHeight / 2)
+		.attr("y", -margin.left + 20) // Position à gauche
+		.attr("transform", "rotate(-90)") // Rotation verticale
+		.attr("text-anchor", "middle")
+		.style("font-size", "14px")
+		.text("Accidents Cumulés");
+
+	// Titre de l'axe Y droit (nombre d'accidents mensuels, pour les barres)
+	chart.append("text")
+		.attr("class", "y-axis-title")
+		.attr("x", -innerHeight / 2)
+		.attr("y", innerWidth + margin.right - 20) // Position à droite
+		.attr("transform", "rotate(-90)")
+		.attr("text-anchor", "middle")
+		.style("font-size", "14px")
+		.text("Accidents par mois");
 }
